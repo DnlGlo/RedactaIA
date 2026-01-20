@@ -102,7 +102,22 @@ include 'includes/header.php';
             <!-- Contact Form -->
             <div class="bg-white rounded-3xl p-8 lg:p-10 shadow-xl shadow-slate-200/50 border border-slate-200">
                 <h3 class="text-2xl font-heading font-bold text-slate-900 mb-6">Envíanos un mensaje</h3>
-                <form action="#" method="POST" class="space-y-6">
+                <!-- Mensajes de estado -->
+                <?php if (isset($_GET['status'])): ?>
+                    <?php if ($_GET['status'] == 'success'): ?>
+                        <div class="mb-6 p-4 rounded-xl bg-green-100 border border-green-200 text-green-700">
+                            <i class="fas fa-check-circle mr-2"></i> ¡Mensaje enviado con éxito! Nos pondremos en contacto
+                            contigo pronto.
+                        </div>
+                    <?php elseif ($_GET['status'] == 'error'): ?>
+                        <div class="mb-6 p-4 rounded-xl bg-red-100 border border-red-200 text-red-700">
+                            <i class="fas fa-exclamation-circle mr-2"></i> Hubo un error al enviar el mensaje. Por favor,
+                            inténtalo de nuevo.
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+                <form action="enviar_contacto.php" method="POST" class="space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label for="nombre" class="block text-sm font-medium text-slate-700 mb-2">Nombre</label>

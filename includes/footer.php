@@ -10,12 +10,11 @@
             <div class="lg:col-span-1">
                 <a href="index.php" class="inline-block mb-4">
                     <span class="text-2xl font-heading font-bold text-white">
-                        Redacta<span class="text-violet-400">IA</span>
+                        Wealth<span class="text-yellow-400">Lab</span>
                     </span>
                 </a>
                 <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                    La plataforma de escritura con IA que te ayuda a crear textos que venden, comunican y convierten en
-                    segundos.
+                    Liderando la revolución de los ingresos pasivos con IA. Estrategias élite para mentes ambiciosas.
                 </p>
                 <div class="flex space-x-4">
                     <a href="#"

@@ -1,7 +1,7 @@
 <?php
 // Page configuration
-$page_title = "RedactaIA | Escribe textos que convierten con IA";
-$page_description = "RedactaIA es la plataforma de escritura con Inteligencia Artificial que te ayuda a crear textos profesionales que venden, comunican y convierten en segundos.";
+$page_title = "AI Wealth Lab | Tu Imperio de Ingresos Pasivos con IA";
+$page_description = "Aprende a generar ingresos pasivos utilizando las herramientas de IA más potentes del mercado. Estrategias probadas para automatizar tu libertad financiera.";
 $current_page = "inicio";
 
 // Include header
@@ -28,46 +28,47 @@ include 'includes/header.php';
         <!-- Pre-title -->
         <div
             class="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
-            <i class="fas fa-sparkles text-violet-400 mr-2"></i>
-            <span class="text-white/90 text-sm font-medium">Copywriting con Inteligencia Artificial</span>
+            <i class="fas fa-coins text-yellow-400 mr-2"></i>
+            <span class="text-white/90 text-sm font-medium">Libertad Financiera con Inteligencia Artificial</span>
         </div>
 
         <!-- Main Title -->
         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-6 leading-tight">
-            Escribe textos que<br>
-            <span class="gradient-text">convierten en segundos</span>
+            Construye tu imperio de<br>
+            <span class="gradient-text">ingresos pasivos</span>
         </h1>
 
         <!-- Subtitle -->
         <p class="text-xl md:text-2xl text-white/80 mb-4 font-light">
-            Crea contenido profesional que vende sin ser experto en copywriting
+            Automatiza tu libertad financiera con estrategias de IA de élite.
         </p>
 
         <!-- Tags -->
         <div class="flex flex-wrap justify-center gap-3 mb-10">
             <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
-                <i class="fas fa-bullhorn mr-2 text-primary-400"></i>Ads
-            </span>
-            <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
-                <i class="fas fa-envelope mr-2 text-primary-400"></i>Emails
-            </span>
-            <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
-                <i class="fas fa-file-alt mr-2 text-primary-400"></i>Landing Pages
-            </span>
-            <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
-                <i class="fas fa-hashtag mr-2 text-primary-400"></i>Redes Sociales
-            </span>
-            <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
-                <i class="fas fa-shopping-cart mr-2 text-primary-400"></i>Ecommerce
-            </span>
+                <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
+                    <i class="fab fa-youtube mr-2 text-red-500"></i>Faceless Channels
+                </span>
+                <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
+                    <i class="fas fa-newspaper mr-2 text-blue-400"></i>AI Newsletters
+                </span>
+                <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
+                    <i class="fas fa-code mr-2 text-emerald-400"></i>Micro-SaaS Assets
+                </span>
+                <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
+                    <i class="fas fa-paint-brush mr-2 text-pink-400"></i>Digital Products
+                </span>
+                <span class="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium backdrop-blur-sm">
+                    <i class="fas fa-robot mr-2 text-amber-400"></i>AI Automations
+                </span>
         </div>
 
         <!-- CTAs -->
         <div class="flex flex-col sm:flex-row justify-center gap-4 mb-16">
             <a href="#"
                 class="btn-gradient inline-flex items-center justify-center px-8 py-4 rounded-full text-white font-semibold text-lg">
-                <i class="fas fa-rocket mr-3"></i>
-                Probar gratis
+                <i class="fas fa-crown mr-3"></i>
+                Comenzar ahora
             </a>
             <a href="#como-funciona"
                 class="inline-flex items-center justify-center px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-lg backdrop-blur-sm border border-white/30 transition-all">
@@ -99,20 +100,20 @@ include 'includes/header.php';
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Stat 1 -->
             <div class="text-center p-8 rounded-2xl bg-gradient-to-br from-primary-50 to-violet-50 card-hover">
-                <div class="text-5xl font-heading font-bold gradient-text mb-3">+10.000</div>
-                <p class="text-slate-600 font-medium">Textos generados</p>
+                <div class="text-5xl font-heading font-bold gradient-text mb-3">+$1M</div>
+                <p class="text-slate-600 font-medium">Generado por alumnos</p>
             </div>
 
             <!-- Stat 2 -->
             <div class="text-center p-8 rounded-2xl bg-gradient-to-br from-primary-50 to-violet-50 card-hover">
-                <div class="text-5xl font-heading font-bold gradient-text mb-3">+2.500</div>
-                <p class="text-slate-600 font-medium">Usuarios activos</p>
+                <div class="text-5xl font-heading font-bold gradient-text mb-3">+5.000</div>
+                <p class="text-slate-600 font-medium">Estudiantes activos</p>
             </div>
 
             <!-- Stat 3 -->
             <div class="text-center p-8 rounded-2xl bg-gradient-to-br from-primary-50 to-violet-50 card-hover">
-                <div class="text-5xl font-heading font-bold gradient-text mb-3">+85%</div>
-                <p class="text-slate-600 font-medium">Mejora en conversiones</p>
+                <div class="text-5xl font-heading font-bold gradient-text mb-3">99%</div>
+                <p class="text-slate-600 font-medium">Tasa de éxito en nichos</p>
             </div>
         </div>
     </div>
@@ -128,10 +129,10 @@ include 'includes/header.php';
                 <i class="fas fa-magic mr-2"></i>Proceso simple
             </span>
             <h2 class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-slate-900 mb-4">
-                ¿Cómo funciona <span class="gradient-text">RedactaIA</span>?
+                ¿Cómo funciona <span class="gradient-text">AI Wealth Lab</span>?
             </h2>
             <p class="text-xl text-slate-600 max-w-2xl mx-auto">
-                Tres pasos simples para crear textos profesionales que convierten
+                Tres pilares para construir tu libertad financiera con IA
             </p>
         </div>
 
@@ -151,10 +152,10 @@ include 'includes/header.php';
                         <i class="fas fa-list-check text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-heading font-bold text-slate-900 mb-3">
-                        Elige qué tipo de texto necesitas
+                        Selecciona tu Nicho de Oro
                     </h3>
                     <p class="text-slate-600">
-                        Selecciona entre decenas de plantillas: emails, ads, posts, descripciones de productos y más.
+                        Identifica los mercados más rentables donde la IA tiene mayor ventaja competitiva hoy.
                     </p>
                 </div>
             </div>
@@ -173,10 +174,11 @@ include 'includes/header.php';
                         <i class="fas fa-wand-magic-sparkles text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-heading font-bold text-slate-900 mb-3">
-                        RedactaIA lo crea por ti
+                        Automatización con IA
                     </h3>
                     <p class="text-slate-600">
-                        Nuestra IA genera múltiples variaciones de texto optimizadas para conversión en segundos.
+                        Configuramos sistemas que trabajan 24/7 generando contenido, ventas y tráfico sin tu
+                        intervención.
                     </p>
                 </div>
             </div>
@@ -194,10 +196,11 @@ include 'includes/header.php';
                         <i class="fas fa-rocket text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-heading font-bold text-slate-900 mb-3">
-                        Copia, publica y vende
+                        Escala tus Ingresos
                     </h3>
                     <p class="text-slate-600">
-                        Edita si lo deseas, copia el texto y úsalo donde quieras. Así de simple.
+                        Replica el sistema en múltiples nichos para multiplicar tus fuentes de ingresos pasivos
+                        mensualmente.
                     </p>
                 </div>
             </div>

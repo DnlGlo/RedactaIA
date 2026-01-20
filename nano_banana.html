@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nano Banana - Visualización Tecnológica</title>
+    <style>
+        :root {
+            --primary-gold: #FFD700;
+            --tech-blue: #00D4FF;
+            --dark-bg: #0a0a1a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            letter-spacing: 4px;
+            color: var(--primary-gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .banana-visual {
+            width: 300px;
+            height: 300px;
+            filter: drop-shadow(0 0 20px var(--primary-gold));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        .circuit-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 5s linear infinite;
+        }
+
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .nano-core {
+            fill: var(--tech-blue);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                r: 5;
+            }
+
+            50% {
+                opacity: 1;
+                r: 8;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>NANO BANANA</h1>
+        <svg class="banana-visual" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- Sombra/Glow posterior -->
+            <path d="M50,150 Q100,180 150,50 Q120,40 40,140 Z" fill="rgba(255, 215, 0, 0.1)" />
+
+            <!-- Cuerpo de la Banana -->
+            <path d="M40,140 Q100,180 160,40 Q130,30 30,130 Q40,140 40,140" fill="url(#bananaGradient)" stroke="#FFC107"
+                stroke-width="1" />
+
+            <!-- Circuitos "Nano" superiores -->
+            <path class="circuit-path" d="M60,145 Q100,170 145,55" fill="none" stroke="rgba(0, 212, 255, 0.8)"
+                stroke-width="2" />
+
+            <path class="circuit-path" d="M75,135 Q110,155 130,70" fill="none" stroke="rgba(255, 255, 255, 0.5)"
+                stroke-width="1" />
+
+            <!-- Nodos tecnológicos -->
+            <circle class="nano-core" cx="80" cy="140" r="6" />
+            <circle class="nano-core" cx="120" cy="100" r="4" style="animation-delay: 0.5s" />
+            <circle class="nano-core" cx="145" cy="55" r="5" style="animation-delay: 1s" />
+
+            <!-- Definiciones -->
+            <defs>
+                <linearGradient id="bananaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
+        <p style="color: #666; margin-top: 30px;">Gemini 3 Pro Image Engineering Visualization</p>
+    </div>
+</body>
+
+</html>

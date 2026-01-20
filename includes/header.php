@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="<?php echo isset($page_description) ? $page_description : 'RedactaIA - Escribe textos que convierten con Inteligencia Artificial'; ?>">
     
-    <title><?php echo isset($page_title) ? $page_title : 'RedactaIA'; ?></title>
+    <title><?php echo isset($page_title) ? $page_title : 'AI Wealth Lab'; ?></title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,6 +24,11 @@
                     },
                     colors: {
                         primary: {
+                            50: '#fdf8e6',
+                            100: '#fbedbf',
+                            200: '#f7db80',
+                            300: '#f3c942',
+                            400: '#f1b312',
                             50: '#eef2ff',
                             100: '#e0e7ff',
                             200: '#c7d2fe',
@@ -34,6 +39,11 @@
                             700: '#4338ca',
                             800: '#3730a3',
                             900: '#312e81',
+                        },
+                        wealth: {
+                            gold: '#D4AF37',
+                            obsidian: '#1A1A1A',
+                            slate: '#2C3E50',
                         },
                         accent: {
                             violet: '#8b5cf6',
@@ -61,7 +71,7 @@
         
         /* Gradient text */
         .gradient-text {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #3b82f6 100%);
+            background: linear-gradient(135deg, #D4AF37 0%, #F9D976 50%, #B8860B 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -69,7 +79,7 @@
         
         /* Gradient button */
         .btn-gradient {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
             transition: all 0.3s ease;
         }
         
@@ -168,23 +178,23 @@
                 <!-- Logo -->
                 <a href="index.php" class="flex items-center space-x-2 group">
                     <span class="text-2xl lg:text-3xl font-heading font-bold text-slate-900 group-hover:text-primary-600 transition-colors">
-                        Redacta<span class="accent">IA</span>
+                        Wealth<span class="accent">Lab</span>
                     </span>
                 </a>
                 
                 <!-- Desktop Navigation -->
                 <div class="hidden lg:flex items-center space-x-8">
                     <a href="index.php" class="nav-link relative text-slate-600 hover:text-primary-600 font-medium transition-colors <?php echo (isset($current_page) && $current_page === 'inicio') ? 'active' : ''; ?>">
-                        Inicio
+                        Estrategias
                     </a>
                     <a href="funcionalidades.php" class="nav-link relative text-slate-600 hover:text-primary-600 font-medium transition-colors <?php echo (isset($current_page) && $current_page === 'funcionalidades') ? 'active' : ''; ?>">
-                        Funcionalidades
+                        Biblioteca
                     </a>
                     <a href="precios.php" class="nav-link relative text-slate-600 hover:text-primary-600 font-medium transition-colors <?php echo (isset($current_page) && $current_page === 'precios') ? 'active' : ''; ?>">
-                        Precios
+                        Membresía
                     </a>
                     <a href="contacto.php" class="nav-link relative text-slate-600 hover:text-primary-600 font-medium transition-colors <?php echo (isset($current_page) && $current_page === 'contacto') ? 'active' : ''; ?>">
-                        Contacto
+                        Comunidad
                     </a>
                 </div>
                 
