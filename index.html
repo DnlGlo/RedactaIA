@@ -4,30 +4,43 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RedactaIA - Tu Asistente de Redacción con IA</title>
+    <title>RedactaIA - Escritura Profesional con Inteligencia Artificial</title>
+    <meta name="description"
+        content="Crea redacciones, informes, guiones y correos electrónicos en segundos con RedactaIA. La potencia de la IA a tu servicio en más de 10 idiomas." />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✍️</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
                     },
                     colors: {
                         primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
+                            50: '#f0f4ff',
+                            100: '#e0e9fe',
+                            200: '#c1d2fe',
+                            300: '#a2bbfe',
+                            400: '#83a4fd',
+                            500: '#648dfc',
+                            600: '#2563eb', // Blue
                             700: '#1d4ed8',
+                            800: '#1e40af',
                             900: '#1e3a8a',
-                        },
-                        dark: {
-                            900: '#0f172a',
-                            800: '#1e293b',
-                            700: '#334155',
                         }
                     }
                 }
@@ -36,53 +49,28 @@
     </script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
         }
 
-        .markdown-body h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+        h1,
+        h2,
+        h3,
+        h4,
+        font-black {
+            font-family: 'Outfit', sans-serif;
         }
 
-        .markdown-body h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            margin-top: 1.5rem;
-        }
-
-        .markdown-body p {
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .markdown-body ul {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .markdown-body li {
-            margin-bottom: 0.5rem;
-        }
-
-        .markdown-body strong {
-            font-weight: 600;
-        }
-
-        /* Smooth transitions */
-        * {
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+        ::selection {
+            background: #2563eb;
+            color: white;
         }
     </style>
 </head>
 
-<body
-    class="bg-slate-50 dark:bg-dark-900 text-slate-900 dark:text-slate-100 antialiased transition-colors duration-300">
+<body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased">
     <div id="root"></div>
-    <!-- Script de entrada para React -->
     <script type="module" src="/src/main.jsx"></script>
 </body>
 
-</html>" " 
+</html>
