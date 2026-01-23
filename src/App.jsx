@@ -114,10 +114,12 @@ const App = () => {
         } catch (error) {
             console.error("Error generating text:", error);
             let errorMessage = error.message || "";
+            const keyStart = apiKey ? apiKey.substring(0, 6) + "..." : "Ninguna";
+
             if (errorMessage.includes("404") || errorMessage.includes("not found")) {
-                setGeneratedText("Error 404: El modelo no responde. Esto suele pasar si la API no está activada para tu clave. \n\nSOLUCIÓN: Ve a https://aistudio.google.com/app/apikey y crea una CLAVE NUEVA. Luego actualiza Vercel.");
+                setGeneratedText(`Error 404 (Clave detectada: ${keyStart}): El modelo no responde. \n\nEsto suele pasar si la API no está activada o si Vercel aún usa una clave vieja. \n\nSOLUCIÓN: Ve a AI Studio, crea una CLAVE NUEVA y re-despliega de nuevo.`);
             } else {
-                setGeneratedText(`Error de conexión: ${errorMessage}. Revisa tu clave VITE_GEMINI_KEY.`);
+                setGeneratedText(`Error (Clave: ${keyStart}): ${errorMessage}.`);
             }
         } finally {
             setIsGenerating(false);
