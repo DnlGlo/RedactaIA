@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+// Eliminamos la librería SDK para usar fetch directo y evitar fallos de carga
 
 const premiumUsers = [
     'tuemail@gmail.com', // Pon tu propio email para probar
@@ -84,7 +84,7 @@ const App = () => {
     const handleGenerate = async () => {
         if (!generatorConfig.topic) return;
         setIsGenerating(true);
-        setGeneratedText('');
+        setGeneratedText('Generando contenido...');
 
         try {
             const rawApiKey = import.meta.env.VITE_GEMINI_KEY;
@@ -113,32 +113,9 @@ const App = () => {
 
             const text = data.candidates[0].content.parts[0].text;
             setGeneratedText(text);
-
-            setTimeout(() => {
-                document.getElementById('result-area')?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
         } catch (error) {
-            console.error("Error generating text:", error);
-            let errorMessage = error.message || "";
-            const isLocal = window.location.hostname === 'localhost';
-            const envType = isLocal ? "Local" : "Vercel";
-            const keyStart = apiKey ? apiKey.substring(0, 7) + "..." : "VACÍA";
-
-            if (errorMessage.includes("404") || errorMessage.includes("not found")) {
-                setGeneratedText(`ERROR 404 - [Entorno: ${envType}]
-Clave detectada: ${keyStart}
-
-EL MODELO NO RESPONDE. Esto pasa cuando Google no reconoce tu clave para este modelo. 
-
-SOLUCIÓN:
-1. Ve a AI Studio y crea una clave nueva.
-2. Si estás en Vercel, asegúrate de haber hecho un "REDEPLOY" sin caché.`);
-            } else if (errorMessage.includes("API key not valid")) {
-                setGeneratedText(`ERROR: CLAVE NO VÁLIDA - [Entorno: ${envType}]
-La clave que empieza por ${keyStart} ha sido rechazada por Google.`);
-            } else {
-                setGeneratedText(`ERROR DE CONEXIÓN: ${errorMessage}\n[Entorno: ${envType} | Clave: ${keyStart}]`);
-            }
+            console.error(error);
+            setGeneratedText(`ERROR: ${error.message}\n\nVerifica tu clave en Vercel y haz un Redeploy sin caché.`);
         } finally {
             setIsGenerating(false);
         }
