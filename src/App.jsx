@@ -93,24 +93,30 @@ const App = () => {
             if (!apiKey) {
                 throw new Error("La clave de API (VITE_GEMINI_KEY) parece estar vacía o no configurada en Vercel.");
             }
-            const genAI = new GoogleGenerativeAI(apiKey);
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
             const prompt = `Actúa como un profesional experto en redacción.
             Idioma: ${generatorConfig.language}
             Tipo de texto: ${generatorConfig.type}
             Estilo: ${generatorConfig.style}
             Tema: ${generatorConfig.topic}
-            
-            Genera un contenido excelente, estructurado y listo para usar.`;
+            Genera un contenido excelente y estructurado.`;
 
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
 
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error?.message || "Error en la API");
+
+            const text = data.candidates[0].content.parts[0].text;
             setGeneratedText(text);
-            // Scroll to result
-            document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
+
+            setTimeout(() => {
+                document.getElementById('result-area')?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         } catch (error) {
             console.error("Error generating text:", error);
             let errorMessage = error.message || "";
