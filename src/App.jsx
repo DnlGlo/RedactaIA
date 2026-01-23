@@ -88,7 +88,7 @@ const App = () => {
 
         try {
             const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_KEY);
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
             const prompt = `Actúa como un profesional experto en redacción.
             Idioma: ${generatorConfig.language}
