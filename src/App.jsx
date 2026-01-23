@@ -26,6 +26,12 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const premiumUsers = [
+    'tuemail@gmail.com', // Pon tu propio email para probar
+    'cliente-ejemplo@gmail.com'
+];
 
 const App = () => {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -75,36 +81,36 @@ const App = () => {
         setUser(null);
     };
 
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         if (!generatorConfig.topic) return;
         setIsGenerating(true);
         setGeneratedText('');
 
-        setTimeout(() => {
-            const result = `[Generado en ${generatorConfig.language}] 
+        try {
+            const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_KEY);
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+            const prompt = `Actúa como un profesional experto en redacción.
+            Idioma: ${generatorConfig.language}
+            Tipo de texto: ${generatorConfig.type}
+            Estilo: ${generatorConfig.style}
+            Tema: ${generatorConfig.topic}
             
-Tipo: ${generatorConfig.type} 
-Estilo: ${generatorConfig.style}
+            Genera un contenido excelente, estructurado y listo para usar.`;
 
-Título: El impacto de "${generatorConfig.topic}" en el mundo moderno
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
 
-Este es un texto generado automáticamente por RedactaIA. En una integración real, aquí aparecería el contenido procesado por un modelo de lenguaje avanzado como Gemini 1.5 Pro o GPT-4.
-
-El tema de "${generatorConfig.topic}" ha cobrado una relevancia sin precedentes. A través de este análisis de tipo ${generatorConfig.type}, podemos observar cómo los paradigmas actuales se están transformando.
-
-Puntos clave:
-1. Innovación constante y adaptabilidad.
-2. La importancia de la comunicación efectiva en un entorno globalizado.
-3. El papel de la tecnología como catalizador del cambio.
-
-Conclusión:
-Para dominar el arte de la redacción en la era digital, herramientas como RedactaIA son fundamentales para mantener la calidad y la coherencia en cada entrega.`;
-
-            setGeneratedText(result);
-            setIsGenerating(false);
+            setGeneratedText(text);
             // Scroll to result
             document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
-        }, 3000);
+        } catch (error) {
+            console.error("Error generating text:", error);
+            setGeneratedText("Error al conectar con la IA. Verifica tu conexión o que la clave de API (VITE_GEMINI_KEY) esté configurada en Vercel.");
+        } finally {
+            setIsGenerating(false);
+        }
     };
 
     const scrollToSection = (id) => {
@@ -140,8 +146,8 @@ Para dominar el arte de la redacción en la era digital, herramientas como Redac
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between items-center h-20">
                             <div className="flex items-center space-x-3 cursor-pointer" onClick={() => scrollToSection('hero')}>
-                                <div className="bg-gradient-to-br from-primary-600 to-indigo-600 p-2.5 rounded-2xl shadow-lg shadow-primary-500/20">
-                                    <Pen className="text-white w-6 h-6" />
+                                <div className="bg-gradient-to-br from-primary-600/10 to-indigo-600/10 p-0.5 rounded-2xl overflow-hidden shadow-lg shadow-primary-500/20">
+                                    <img src="/logo-pro.png" alt="logo" className="w-9 h-9 object-cover" />
                                 </div>
                                 <span className="text-2xl font-black tracking-tighter">
                                     Redacta<span className="text-primary-600">IA</span>
@@ -168,9 +174,17 @@ Para dominar el arte de la redacción en la era digital, herramientas como Redac
                                     {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                                 </button>
                                 {isLoggedIn ? (
-                                    <div className="flex items-center space-x-3 bg-slate-100 dark:bg-slate-800 p-1 pr-4 rounded-full border border-slate-200 dark:border-slate-700">
-                                        <img src={user.picture} alt="profile" className="w-8 h-8 rounded-full border border-white dark:border-slate-600" />
-                                        <button onClick={handleLogout} className="text-xs font-bold text-red-500 hover:text-red-600">Salir</button>
+                                    <div className="flex items-center space-x-3 bg-slate-100 dark:bg-slate-800 p-1 pr-3 rounded-full border border-slate-200 dark:border-slate-700">
+                                        <div className="text-right hidden sm:block pl-2">
+                                            <p className="text-[10px] font-black opacity-50 uppercase tracking-tighter truncate max-w-[80px]">{user.name}</p>
+                                            {premiumUsers.includes(user.email) && (
+                                                <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest bg-amber-500/10 px-1.5 py-0.5 rounded-md">Premium</p>
+                                            )}
+                                        </div>
+                                        <img src={user.picture} className={`w-8 h-8 rounded-full ${premiumUsers.includes(user.email) ? 'ring-2 ring-amber-500' : 'ring-2 ring-indigo-500/20'}`} alt="avatar" />
+                                        <button onClick={handleLogout} className="p-2 hover:text-red-500 transition-colors">
+                                            <LogOut className="w-4 h-4" />
+                                        </button>
                                     </div>
                                 ) : (
                                     <button
@@ -484,7 +498,13 @@ Para dominar el arte de la redacción en la era digital, herramientas como Redac
                                                 purchase_units: [{ amount: { value: "19.99", currency_code: "EUR" }, description: "RedactaIA Premium" }]
                                             });
                                         }}
+                                        onApprove={(data, actions) => {
+                                            return actions.order.capture().then((details) => {
+                                                alert("¡Gracias " + details.payer.name.given_name + "! Pago recibido. En menos de 2 horas activaremos tus ventajas Premium.");
+                                            });
+                                        }}
                                     />
+                                    <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
                                 </div>
                             </div>
 
@@ -512,7 +532,13 @@ Para dominar el arte de la redacción en la era digital, herramientas como Redac
                                                 purchase_units: [{ amount: { value: "59.99", currency_code: "EUR" }, description: "RedactaIA Empresa" }]
                                             });
                                         }}
+                                        onApprove={(data, actions) => {
+                                            return actions.order.capture().then((details) => {
+                                                alert("¡Gracias! Pago de Plan Empresa recibido. En menos de 2 horas nos pondremos en contacto.");
+                                            });
+                                        }}
                                     />
+                                    <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
                                 </div>
                             </div>
                         </div>
@@ -552,8 +578,8 @@ Para dominar el arte de la redacción en la era digital, herramientas como Redac
                         <div className="grid md:grid-cols-4 gap-12 mb-16">
                             <div className="col-span-2">
                                 <div className="flex items-center space-x-3 mb-8">
-                                    <div className="bg-primary-600 p-2 rounded-xl">
-                                        <Pen className="text-white w-6 h-6" />
+                                    <div className="bg-primary-600/10 p-1 rounded-xl">
+                                        <img src="/logo-pro.png" alt="logo" className="w-8 h-8 object-cover rounded-lg" />
                                     </div>
                                     <span className="text-2xl font-black tracking-tighter">RedactaIA</span>
                                 </div>
