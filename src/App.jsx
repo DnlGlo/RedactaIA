@@ -22,10 +22,14 @@ import {
     Unlock,
     Download,
     Copy,
-    ArrowDown
+    ArrowDown,
+    Globe,
+    FileText,
+    X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { GoogleOAuthProvider, GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 // Eliminamos la librería SDK para usar fetch directo y evitar fallos de carga
 
 const premiumUsers = [
@@ -39,6 +43,8 @@ const App = () => {
     const [user, setUser] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedText, setGeneratedText] = useState('');
+    const [activeLegalModal, setActiveLegalModal] = useState(null);
+    const [showLoginModal, setShowLoginModal] = useState(false);
     const [generatorConfig, setGeneratorConfig] = useState({
         topic: '',
         language: 'Español',
@@ -66,15 +72,20 @@ const App = () => {
         }
     };
 
-    // Google Login Simulation
-    const handleGoogleLogin = () => {
-        setIsGenerating(true);
-        setTimeout(() => {
+    // Google Login Real Implementation
+    const handleGoogleLogin = useGoogleLogin({
+        onSuccess: tokenResponse => {
+            console.log(tokenResponse);
+            // Normalmente aquí pedirías los datos del usuario con el access_token
             setIsLoggedIn(true);
-            setUser({ name: 'Daniel', email: 'daniel@example.com', picture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel' });
-            setIsGenerating(false);
-        }, 1500);
-    };
+            setUser({
+                name: 'Usuario RedactaIA',
+                email: 'conectado@google.com',
+                picture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel'
+            });
+        },
+        onError: () => console.log('Login Failed'),
+    });
 
     const handleLogout = () => {
         setIsLoggedIn(false);
@@ -83,39 +94,62 @@ const App = () => {
 
     const handleGenerate = async () => {
         if (!generatorConfig.topic) return;
+
+        // ESTRATEGIA: Morder el anzuelo. Si no está logueado, mostramos el modal de aviso.
+        if (!isLoggedIn) {
+            setShowLoginModal(true);
+            return;
+        }
+
         setIsGenerating(true);
-        setGeneratedText('Generando contenido...');
+        setGeneratedText('Generando contenido ultra rápido con Groq...');
 
         try {
-            const rawApiKey = import.meta.env.VITE_GEMINI_KEY;
-            const apiKey = rawApiKey ? rawApiKey.trim() : null;
+            const apiKey = import.meta.env.VITE_GROQ_KEY;
 
             if (!apiKey) {
-                throw new Error("La clave de API (VITE_GEMINI_KEY) parece estar vacía o no configurada en Vercel.");
+                throw new Error("La clave de Groq no está configurada.");
             }
+
             const prompt = `Actúa como un profesional experto en redacción.
             Idioma: ${generatorConfig.language}
             Tipo de texto: ${generatorConfig.type}
             Estilo: ${generatorConfig.style}
             Tema: ${generatorConfig.topic}
-            Genera un contenido excelente y estructurado.`;
 
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            ATENCIÓN: EL CONTENIDO DEBE GENERARSE OBLIGATORIAMENTE EN EL IDIOMA: ${generatorConfig.language.toUpperCase()}.
+            
+            REGLAS CRÍTICAS DE FORMATO (MUY IMPORTANTE):
+            1. PROHIBIDO usar símbolos de asteriscos (*), almohadillas (#), guiones bajos (_) o cualquier carácter de formato Markdown.
+            2. El texto debe ser 100% LIMPIO, solo letras, números y puntuación normal. 
+            3. NO pongas títulos con #. Si necesitas un título, escríbelo en mayúsculas sin ningún símbolo.
+            4. Estructura el contenido con párrafos claros y saltos de línea normales.
+            5. El resultado debe estar listo para copiar y pegar directamente sin necesidad de limpieza.`;
+
+            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
+                    model: "llama-3.3-70b-versatile",
+                    messages: [
+                        { role: "system", content: "Eres un redactor profesional experto." },
+                        { role: "user", content: prompt }
+                    ],
+                    temperature: 0.7
                 })
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.error?.message || "Error en la API");
+            if (!response.ok) throw new Error(data.error?.message || "Error en la API de Groq");
 
-            const text = data.candidates[0].content.parts[0].text;
+            const text = data.choices[0].message.content;
             setGeneratedText(text);
         } catch (error) {
             console.error(error);
-            setGeneratedText(`ERROR: ${error.message}\n\nVerifica tu clave en Vercel y haz un Redeploy sin caché.`);
+            setGeneratedText(`ERROR: ${error.message}\n\nIntenta recargar la página o verifica tu clave de Groq.`);
         } finally {
             setIsGenerating(false);
         }
@@ -138,6 +172,22 @@ const App = () => {
     const languages = ['Español', 'English', 'Français', 'Deutsch', 'Italiano', 'Português', 'Nederlands', 'Русский', '中文', '日本語', 'العربية'];
     const textTypes = ['Redacción', 'Informe', 'Guion', 'Email', 'Redes Sociales', 'Blog Post', 'Newsletter', 'Resumen Ejecutivo', 'Carta Formal', 'Poema', 'Diálogo'];
     const styles = ['Formal', 'Informal', 'Humorístico', 'Profesional', 'Optimista', 'Persuasivo', 'Técnico', 'Narrativo', 'Descriptivo', 'Inspiracional'];
+
+    // Free Tier Restrictions
+    const freeLanguages = ['Español', 'English'];
+    const freeStyles = ['Formal', 'Informal', 'Humorístico', 'Profesional'];
+
+    const isPremium = user && premiumUsers.includes(user.email);
+
+    // Auto-revert logic if user selects premium option while free
+    useEffect(() => {
+        if (!isPremium && !freeLanguages.includes(generatorConfig.language)) {
+            setGeneratorConfig(prev => ({ ...prev, language: 'Español' }));
+        }
+        if (!isPremium && !freeStyles.includes(generatorConfig.style)) {
+            setGeneratorConfig(prev => ({ ...prev, style: 'Formal' }));
+        }
+    }, [isPremium, generatorConfig.language, generatorConfig.style]);
 
     const paypalOptions = {
         "client-id": "test", // User should replace this with their actual client-id
@@ -218,13 +268,12 @@ const App = () => {
                         >
                             <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-xs font-black uppercase tracking-widest mb-8">
                                 <Sparkles size={14} className="text-amber-500" />
-                                <span>Impulsado por Gemini 1.5 Pro</span>
+                                <span>Impulsado por Llama 3.3 (Ultra Rápido)</span>
                             </div>
                             <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-[0.9]">
-                                Tus ideas, <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-600">
-                                    transformadas.
-                                </span>
+                                Genera textos <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-600">profesionales</span> con IA en <br />
+                                segundos
                             </h1>
                             <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
                                 La herramienta de inteligencia artificial más potente para crear informes, guiones y contenidos profesionales en segundos.
@@ -323,123 +372,187 @@ const App = () => {
 
                                 <div className="relative">
                                     {/* Lock Overlay */}
-                                    {!isLoggedIn && (
-                                        <div className="absolute inset-0 z-10 backdrop-blur-[4px] bg-white/40 dark:bg-slate-950/40 rounded-3xl flex flex-col items-center justify-center text-center p-8">
-                                            <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-sm">
-                                                <div className="bg-primary-50 dark:bg-primary-900/30 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 text-primary-600">
-                                                    <Lock size={32} />
-                                                </div>
-                                                <h3 className="text-2xl font-black mb-3">Acceso Restringido</h3>
-                                                <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium">
-                                                    Debes iniciar sesión con tu cuenta de Google para utilizar el generador.
-                                                </p>
-                                                <button
-                                                    onClick={handleGoogleLogin}
-                                                    disabled={isGenerating}
-                                                    className="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 py-4 rounded-2xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50"
-                                                >
-                                                    <svg className="w-6 h-6" viewBox="0 0 24 24">
-                                                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                                                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                                                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
-                                                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                                                    </svg>
-                                                    {isGenerating ? 'Iniciando...' : 'Entrar con Google'}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="grid md:grid-cols-2 gap-8">
-                                        <div className="space-y-6">
-                                            <div>
-                                                <label className="block text-sm font-black mb-3 text-slate-400 uppercase tracking-tighter">Tema o Prompt</label>
-                                                <textarea
-                                                    className="w-full h-40 p-5 rounded-3xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none focus:border-primary-500 transition-all font-medium resize-none"
-                                                    placeholder="Ej: Escribe un informe sobre la IA en la educación..."
-                                                    value={generatorConfig.topic}
-                                                    onChange={(e) => setGeneratorConfig({ ...generatorConfig, topic: e.target.value })}
-                                                />
-                                            </div>
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-tighter flex items-center gap-1">
-                                                        <Languages size={12} /> Idioma
-                                                    </label>
-                                                    <select
-                                                        className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold"
-                                                        value={generatorConfig.language}
-                                                        onChange={(e) => setGeneratorConfig({ ...generatorConfig, language: e.target.value })}
-                                                    >
-                                                        {languages.map(l => <option key={l} value={l}>{l}</option>)}
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-tighter flex items-center gap-1">
-                                                        <Type size={12} /> Tipo de Texto
-                                                    </label>
-                                                    <select
-                                                        className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold"
-                                                        value={generatorConfig.type}
-                                                        onChange={(e) => setGeneratorConfig({ ...generatorConfig, type: e.target.value })}
-                                                    >
-                                                        {textTypes.map(t => <option key={t} value={t}>{t}</option>)}
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-tighter flex items-center gap-1">
-                                                    <Palette size={12} /> Estilo
-                                                </label>
-                                                <select
-                                                    className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold"
-                                                    value={generatorConfig.style}
-                                                    onChange={(e) => setGeneratorConfig({ ...generatorConfig, style: e.target.value })}
-                                                >
-                                                    {styles.map(s => <option key={s} value={s}>{s}</option>)}
-                                                </select>
-                                            </div>
-
-                                            <button
-                                                onClick={handleGenerate}
-                                                disabled={isGenerating || !generatorConfig.topic}
-                                                className="w-full py-5 bg-gradient-to-r from-primary-600 to-indigo-600 text-white rounded-[2rem] font-black text-xl flex items-center justify-center gap-3 shadow-xl shadow-primary-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+                                    {/* Modal de "Muerde el Anzuelo" (Login forzado al generar) */}
+                                    <AnimatePresence>
+                                        {showLoginModal && (
+                                            <motion.div
+                                                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                                                className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md"
+                                                onClick={() => setShowLoginModal(false)}
                                             >
-                                                {isGenerating ? (
-                                                    <><div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div> <span>Generando...</span></>
-                                                ) : (
-                                                    <><Send size={20} /> <span>¡Generar ahora!</span></>
-                                                )}
-                                            </button>
-                                        </div>
+                                                <motion.div
+                                                    initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+                                                    className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[3rem] p-10 text-center relative shadow-2xl border border-slate-200 dark:border-slate-800"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <button onClick={() => setShowLoginModal(false)} className="absolute top-6 right-6 p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-all"><X size={16} /></button>
 
-                                        <div id="result-area" className="bg-slate-50 dark:bg-slate-950 rounded-[2.5rem] p-8 border-2 border-slate-100 dark:border-slate-800 flex flex-col min-h-[400px]">
-                                            <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
-                                                <span className="text-primary-600 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                                                    <div className="w-2 h-2 rounded-full bg-primary-600 animate-pulse"></div>
-                                                    Resultado de RedactaIA
-                                                </span>
-                                                <div className="flex gap-2">
-                                                    <button onClick={() => alert('Copiado')} className="p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700">
-                                                        <Copy size={16} />
+                                                    <div className="w-20 h-20 bg-primary-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 text-primary-600">
+                                                        <Zap size={40} />
+                                                    </div>
+
+                                                    <h3 className="text-3xl font-black mb-4 tracking-tighter italic">¡Casi lo tienes!</h3>
+                                                    <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium leading-relaxed">
+                                                        He preparado una redacción increíble para ti. Para verla y descargarla, solo necesitas entrar con tu cuenta de Google. <span className="font-bold text-primary-500">¡Es gratis!</span>
+                                                    </p>
+
+                                                    <button
+                                                        onClick={() => {
+                                                            setShowLoginModal(false);
+                                                            handleGoogleLogin();
+                                                        }}
+                                                        className="w-full flex items-center justify-center gap-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-5 rounded-2xl font-black text-lg hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-primary-500/20"
+                                                    >
+                                                        <svg className="w-6 h-6" viewBox="0 0 24 24">
+                                                            <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                                            <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                                            <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
+                                                            <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                                                        </svg>
+                                                        ENTRAR CON GOOGLE
                                                     </button>
-                                                    <button onClick={() => alert('Descargado')} className="p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700">
-                                                        <Download size={16} />
+                                                </motion.div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+
+                                    {/* Diseño Horizontal del Generador */}
+                                    <div className="grid lg:grid-cols-5 gap-8">
+                                        {/* Columna de Configuración (Izquierda) */}
+                                        <div className="lg:col-span-2 space-y-6">
+                                            <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-8 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none">
+                                                <div className="space-y-6">
+                                                    <div>
+                                                        <label className="block text-xs font-black mb-3 text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                                            <MessageSquare size={14} className="text-primary-500" /> Tema o Prompt
+                                                        </label>
+                                                        <textarea
+                                                            className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none h-40 focus:border-primary-500 transition-all font-bold"
+                                                            placeholder="¿Sobre qué quieres que escriba hoy?"
+                                                            value={generatorConfig.topic}
+                                                            onChange={(e) => setGeneratorConfig({ ...generatorConfig, topic: e.target.value })}
+                                                        />
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                                                                <Globe size={12} /> Idioma
+                                                            </label>
+                                                            <select
+                                                                className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm"
+                                                                value={generatorConfig.language}
+                                                                onChange={(e) => {
+                                                                    if (!isPremium && !freeLanguages.includes(e.target.value)) {
+                                                                        alert("🔒 Esta opción es solo para usuarios Premium. ¡Suscríbete para desbloquear todos los idiomas!");
+                                                                        return;
+                                                                    }
+                                                                    setGeneratorConfig({ ...generatorConfig, language: e.target.value });
+                                                                }}
+                                                            >
+                                                                {languages.map(l => (
+                                                                    <option
+                                                                        key={l}
+                                                                        value={l}
+                                                                        disabled={!isPremium && !freeLanguages.includes(l)}
+                                                                    >
+                                                                        {l} {!isPremium && !freeLanguages.includes(l) ? '🔒' : ''}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                                                                <FileText size={12} /> Tipo
+                                                            </label>
+                                                            <select
+                                                                className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm"
+                                                                value={generatorConfig.type}
+                                                                onChange={(e) => setGeneratorConfig({ ...generatorConfig, type: e.target.value })}
+                                                            >
+                                                                {textTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                                                            <Palette size={12} /> Estilo
+                                                        </label>
+                                                        <select
+                                                            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm"
+                                                            value={generatorConfig.style}
+                                                            onChange={(e) => {
+                                                                if (!isPremium && !freeStyles.includes(e.target.value)) {
+                                                                    alert("🔒 Esta opción es solo para usuarios Premium. ¡Suscríbete para desbloquear todos los estilos!");
+                                                                    return;
+                                                                }
+                                                                setGeneratorConfig({ ...generatorConfig, style: e.target.value });
+                                                            }}
+                                                        >
+                                                            {styles.map(s => (
+                                                                <option
+                                                                    key={s}
+                                                                    value={s}
+                                                                    disabled={!isPremium && !freeStyles.includes(s)}
+                                                                >
+                                                                    {s} {!isPremium && !freeStyles.includes(s) ? '🔒' : ''}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+
+                                                    <button
+                                                        onClick={handleGenerate}
+                                                        disabled={isGenerating || !generatorConfig.topic}
+                                                        className="w-full py-4 bg-gradient-to-r from-primary-600 to-indigo-600 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 shadow-lg shadow-primary-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 mt-4"
+                                                    >
+                                                        {isGenerating ? (
+                                                            <><div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div> <span>Generando...</span></>
+                                                        ) : (
+                                                            <><Send size={18} /> <span>¡Generar ahora!</span></>
+                                                        )}
                                                     </button>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <div className="flex-grow font-medium leading-relaxed overflow-y-auto max-h-[450px] whitespace-pre-wrap">
-                                                {generatedText ? (
-                                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{generatedText}</motion.div>
-                                                ) : (
-                                                    <div className="h-full flex flex-col items-center justify-center text-slate-400 italic text-center space-y-4">
-                                                        <MessageSquare size={48} className="opacity-20" />
-                                                        <p>Esperando tu creatividad... <br />Configura los campos y dale a generar.</p>
+                                        {/* Área de Resultado Expandida (Derecha) - Diseño Horizontal */}
+                                        <div id="result-area" className="lg:col-span-3 bg-white dark:bg-slate-900 rounded-[2rem] p-1 border border-slate-100 dark:border-slate-800 shadow-2xl flex flex-col">
+                                            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-[1.8rem] p-8 h-full flex flex-col border border-transparent">
+                                                <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700">
+                                                    <span className="text-primary-600 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                                                        <div className="w-2 h-2 rounded-full bg-primary-600 animate-pulse"></div>
+                                                        Resultado de RedactaIA
+                                                    </span>
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={() => {
+                                                                navigator.clipboard.writeText(generatedText);
+                                                                alert('Copiado al portapapeles');
+                                                            }}
+                                                            className="group p-3 rounded-xl bg-white dark:bg-slate-700 hover:bg-primary-600 hover:text-white transition-all border border-slate-200 dark:border-slate-600 shadow-sm flex items-center gap-2 text-xs font-bold"
+                                                        >
+                                                            <Copy size={14} /> <span>COPIAR</span>
+                                                        </button>
+                                                        <button onClick={() => alert('Función próximamente')} className="p-3 rounded-xl bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-all border border-slate-200 dark:border-slate-600 shadow-sm">
+                                                            <Download size={14} />
+                                                        </button>
                                                     </div>
-                                                )}
+                                                </div>
+
+                                                <div className="flex-grow font-medium leading-[1.8] text-slate-700 dark:text-slate-300 overflow-y-auto max-h-[600px] whitespace-pre-wrap pr-4 custom-scrollbar text-lg italic">
+                                                    {generatedText ? (
+                                                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{generatedText}</motion.div>
+                                                    ) : (
+                                                        <div className="h-full flex flex-col items-center justify-center text-slate-400 italic text-center space-y-6 py-20">
+                                                            <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center animate-bounce">
+                                                                <MessageSquare size={32} className="opacity-40" />
+                                                            </div>
+                                                            <p className="max-w-[250px] font-bold text-sm uppercase tracking-widest">Esperando tu gran idea...</p>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -560,25 +673,116 @@ const App = () => {
                         <h2 className="text-4xl font-black mb-6">¿Alguna duda o problema?</h2>
                         <p className="text-slate-400 mb-12 max-w-lg mx-auto font-medium">Nuestro equipo está listo para ayudarte a llevar tu redacción al siguiente nivel.</p>
 
-                        <form className="grid md:grid-cols-2 gap-6 text-left" onSubmit={(e) => e.preventDefault()}>
+                        <form
+                            className="grid md:grid-cols-2 gap-6 text-left"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                const nombre = e.target[0].value;
+                                const mensaje = e.target[2].value;
+                                window.location.href = `mailto:redactaia9@gmail.com?subject=Contacto desde RedactaIA de ${nombre}&body=${mensaje}`;
+                                alert("Se abrirá tu gestor de correo para enviar el mensaje a redactaia9@gmail.com");
+                            }}
+                        >
                             <div className="space-y-2">
                                 <label className="text-xs font-black uppercase tracking-widest text-slate-400">Nombre</label>
-                                <input className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder="Tu nombre" />
+                                <input required className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder="Tu nombre" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-black uppercase tracking-widest text-slate-400">Email</label>
-                                <input className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder="correo@ejemplo.com" />
+                                <input required type="email" className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder="correo@ejemplo.com" />
                             </div>
                             <div className="md:col-span-2 space-y-2">
                                 <label className="text-xs font-black uppercase tracking-widest text-slate-400">Mensaje</label>
-                                <textarea className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500 h-32 resize-none" placeholder="¿En qué podemos ayudarte?"></textarea>
+                                <textarea required className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500 h-32 resize-none" placeholder="¿En qué podemos ayudarte?"></textarea>
                             </div>
-                            <button className="md:col-span-2 py-5 bg-primary-600 rounded-2xl font-black hover:bg-primary-500 transition-all shadow-xl shadow-primary-600/20">
+                            <button type="submit" className="md:col-span-2 py-5 bg-primary-600 rounded-2xl font-black hover:bg-primary-500 transition-all shadow-xl shadow-primary-600/20">
                                 Enviar Mensaje
                             </button>
                         </form>
                     </div>
                 </section>
+
+                {/* Modal Legal */}
+                <AnimatePresence>
+                    {activeLegalModal && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-xl"
+                            onClick={() => setActiveLegalModal(null)}
+                        >
+                            <motion.div
+                                initial={{ scale: 0.9, y: 20 }}
+                                animate={{ scale: 1, y: 0 }}
+                                exit={{ scale: 0.9, y: 20 }}
+                                className="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[80vh] rounded-[3rem] p-10 relative overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <button
+                                    onClick={() => setActiveLegalModal(null)}
+                                    className="absolute top-6 right-6 p-3 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                                >
+                                    <X size={20} />
+                                </button>
+
+                                {activeLegalModal === 'privacy' && (
+                                    <div className="space-y-6">
+                                        <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 mb-6">
+                                            <ShieldCheck size={32} />
+                                        </div>
+                                        <h2 className="text-3xl font-black tracking-tighter">Política de Privacidad</h2>
+                                        <div className="space-y-4 text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                                            <p>En <span className="font-bold text-slate-900 dark:text-white">RedactaIA</span>, tu privacidad es nuestra prioridad absoluta. Aquí te explicamos cómo tratamos tus datos:</p>
+                                            <ul className="list-disc pl-5 space-y-2">
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Datos de Registro:</span> Solo guardamos tu nombre y email cuando inicias sesión con Google para personalizar tu experiencia.</li>
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Tus Generaciones:</span> Los textos que creas no se comparten con terceros ni se utilizan para entrenar otros modelos públicos.</li>
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Seguridad:</span> Utilizamos encriptación de grado bancario para proteger toda la comunicación entre tu navegador y Groq.</li>
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Publicidad:</span> NO vendemos tus datos a anunciantes ni a ninguna otra empresa.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeLegalModal === 'terms' && (
+                                    <div className="space-y-6">
+                                        <div className="w-16 h-16 bg-primary-500/10 rounded-2xl flex items-center justify-center text-primary-500 mb-6">
+                                            <FileText size={32} />
+                                        </div>
+                                        <h2 className="text-3xl font-black tracking-tighter">Términos del Servicio</h2>
+                                        <div className="space-y-4 text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                                            <p>Al utilizar RedactaIA, aceptas las siguientes condiciones:</p>
+                                            <ul className="list-disc pl-5 space-y-2">
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Uso Responsable:</span> Te comprometes a no usar la IA para generar contenido de odio, ilegal o fraudulento.</li>
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Propiedad:</span> El texto generado es tuyo. Puedes usarlo para fines comerciales o personales sin restricciones.</li>
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Suscripciones:</span> Los pagos se procesan vía PayPal. Puedes cancelar tu suscripción en cualquier momento desde tu panel.</li>
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Limitación:</span> Aunque usamos lo último en IA (Llama 3.3), revisa siempre el contenido para asegurar su exactitud profesional.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeLegalModal === 'cookies' && (
+                                    <div className="space-y-6">
+                                        <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 mb-6">
+                                            <Moon size={32} />
+                                        </div>
+                                        <h2 className="text-3xl font-black tracking-tighter">Política de Cookies</h2>
+                                        <div className="space-y-4 text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                                            <p>Usamos solo las cookies necesarias para que tu experiencia sea perfecta:</p>
+                                            <ul className="list-disc pl-5 space-y-2">
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Sesión:</span> Para mantenerte conectado mientras trabajas en tus textos.</li>
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Preferencias:</span> Para recordar si prefieres el modo claro o el modo oscuro.</li>
+                                                <li><span className="font-bold text-slate-900 dark:text-white">Analítica:</span> Usamos medidas anónimas para saber qué funciones gustan más y seguir mejorando.</li>
+                                                <li><span className="font-bold text-slate-900 dark:text-white">No rastreo:</span> No usamos cookies de rastreo publicitario de terceros.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )}
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Footer */}
                 <footer className="py-20 border-t border-slate-200 dark:border-slate-800">
@@ -598,17 +802,17 @@ const App = () => {
                             <div>
                                 <h4 className="font-black mb-8 uppercase tracking-widest text-xs opacity-50">Legal</h4>
                                 <ul className="space-y-4 text-sm font-bold text-slate-500">
-                                    <li><a href="#" className="hover:text-primary-600">Privacidad</a></li>
-                                    <li><a href="#" className="hover:text-primary-600">Términos</a></li>
-                                    <li><a href="#" className="hover:text-primary-600">Cookies</a></li>
+                                    <li><button onClick={() => setActiveLegalModal('privacy')} className="hover:text-primary-600">Privacidad</button></li>
+                                    <li><button onClick={() => setActiveLegalModal('terms')} className="hover:text-primary-600">Términos</button></li>
+                                    <li><button onClick={() => setActiveLegalModal('cookies')} className="hover:text-primary-600">Cookies</button></li>
                                 </ul>
                             </div>
                             <div>
                                 <h4 className="font-black mb-8 uppercase tracking-widest text-xs opacity-50">Redes</h4>
                                 <ul className="space-y-4 text-sm font-bold text-slate-500">
+                                    <li><a href="https://www.tiktok.com/@redactaia" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 flex items-center gap-2">TikTok <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">@redactaia</span></a></li>
                                     <li><a href="#" className="hover:text-primary-600">Twitter</a></li>
                                     <li><a href="#" className="hover:text-primary-600">LinkedIn</a></li>
-                                    <li><a href="#" className="hover:text-primary-600">Instagram</a></li>
                                 </ul>
                             </div>
                         </div>
