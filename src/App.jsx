@@ -87,9 +87,11 @@ const App = () => {
         setGeneratedText('');
 
         try {
-            const apiKey = import.meta.env.VITE_GEMINI_KEY;
+            const rawApiKey = import.meta.env.VITE_GEMINI_KEY;
+            const apiKey = rawApiKey ? rawApiKey.trim() : null;
+
             if (!apiKey) {
-                throw new Error("La clave de API (VITE_GEMINI_KEY) no está configurada en el entorno.");
+                throw new Error("La clave de API (VITE_GEMINI_KEY) parece estar vacía o no configurada en Vercel.");
             }
             const genAI = new GoogleGenerativeAI(apiKey);
             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -111,7 +113,12 @@ const App = () => {
             document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
         } catch (error) {
             console.error("Error generating text:", error);
-            setGeneratedText(`Error: ${error.message || "No se pudo conectar con la IA"}. Verifica la VITE_GEMINI_KEY en Vercel.`);
+            let errorMessage = error.message || "";
+            if (errorMessage.includes("404") || errorMessage.includes("not found")) {
+                setGeneratedText("Error 404: El modelo no responde. Esto suele pasar si la API no está activada para tu clave. \n\nSOLUCIÓN: Ve a https://aistudio.google.com/app/apikey y crea una CLAVE NUEVA. Luego actualiza Vercel.");
+            } else {
+                setGeneratedText(`Error de conexión: ${errorMessage}. Revisa tu clave VITE_GEMINI_KEY.`);
+            }
         } finally {
             setIsGenerating(false);
         }
