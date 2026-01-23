@@ -88,7 +88,7 @@ const App = () => {
 
         try {
             const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_KEY);
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
             const prompt = `Actúa como un profesional experto en redacción.
             Idioma: ${generatorConfig.language}
@@ -107,7 +107,7 @@ const App = () => {
             document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
         } catch (error) {
             console.error("Error generating text:", error);
-            setGeneratedText("Error al conectar con la IA. Verifica tu conexión o que la clave de API (VITE_GEMINI_KEY) esté configurada en Vercel.");
+            setGeneratedText(`Error: ${error.message || "No se pudo conectar con la IA"}. Verifica la VITE_GEMINI_KEY en Vercel.`);
         } finally {
             setIsGenerating(false);
         }
