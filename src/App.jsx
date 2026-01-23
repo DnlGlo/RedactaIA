@@ -114,12 +114,24 @@ const App = () => {
         } catch (error) {
             console.error("Error generating text:", error);
             let errorMessage = error.message || "";
-            const keyStart = apiKey ? apiKey.substring(0, 6) + "..." : "Ninguna";
+            const isLocal = window.location.hostname === 'localhost';
+            const envType = isLocal ? "Local" : "Vercel";
+            const keyStart = apiKey ? apiKey.substring(0, 7) + "..." : "VACÍA";
 
             if (errorMessage.includes("404") || errorMessage.includes("not found")) {
-                setGeneratedText(`Error 404 (Clave detectada: ${keyStart}): El modelo no responde. \n\nEsto suele pasar si la API no está activada o si Vercel aún usa una clave vieja. \n\nSOLUCIÓN: Ve a AI Studio, crea una CLAVE NUEVA y re-despliega de nuevo.`);
+                setGeneratedText(`ERROR 404 - [Entorno: ${envType}]
+Clave detectada: ${keyStart}
+
+EL MODELO NO RESPONDE. Esto pasa cuando Google no reconoce tu clave para este modelo. 
+
+SOLUCIÓN:
+1. Ve a AI Studio y crea una clave nueva.
+2. Si estás en Vercel, asegúrate de haber hecho un "REDEPLOY" sin caché.`);
+            } else if (errorMessage.includes("API key not valid")) {
+                setGeneratedText(`ERROR: CLAVE NO VÁLIDA - [Entorno: ${envType}]
+La clave que empieza por ${keyStart} ha sido rechazada por Google.`);
             } else {
-                setGeneratedText(`Error (Clave: ${keyStart}): ${errorMessage}.`);
+                setGeneratedText(`ERROR DE CONEXIÓN: ${errorMessage}\n[Entorno: ${envType} | Clave: ${keyStart}]`);
             }
         } finally {
             setIsGenerating(false);
