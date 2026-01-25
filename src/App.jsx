@@ -580,7 +580,7 @@ const App = () => {
                                     <span className="text-slate-400 ml-2 font-bold">/siempre</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
-                                    {['10 generaciones mensuales', '2 idiomas disponibles', 'Estilo básico', 'Soporte comunitario'].map(i => (
+                                    {['10 generaciones mensuales', '2 idiomas disponibles', '4 Estilos Disponibles', 'Soporte comunitario'].map(i => (
                                         <li key={i} className="flex items-center gap-3 text-sm font-semibold">
                                             <div className="p-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400"><Check size={14} /></div>
                                             <span>{i}</span>
