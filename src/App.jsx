@@ -292,7 +292,7 @@ const App = () => {
                                     </div>
                                 ) : (
                                     <button
-                                        onClick={() => scrollToSection('generator')}
+                                        onClick={() => handleGoogleLogin()}
                                         className="hidden sm:block bg-slate-900 dark:bg-white text-white dark:text-slate-950 px-6 py-2.5 rounded-full font-bold text-sm shadow-xl shadow-slate-900/10 dark:shadow-white/5 hover:scale-105 active:scale-95 transition-all"
                                     >
                                         Empezar
