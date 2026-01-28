@@ -30,10 +30,12 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { GoogleOAuthProvider, GoogleLogin, useGoogleLogin } from '@react-oauth/google';
-// Eliminamos la librería SDK para usar fetch directo y evitar fallos de carga
+import { supabase } from './supabaseClient';
+
+const adminEmail = 'redactaia9@gmail.com'; // Cambia esto por tu email real de admin
 
 const premiumUsers = [
-    'tuemail@gmail.com', // Pon tu propio email para probar
+    'redactaia9@gmail.com',
     'cliente-ejemplo@gmail.com'
 ];
 
@@ -45,6 +47,12 @@ const App = () => {
     const [generatedText, setGeneratedText] = useState('');
     const [activeLegalModal, setActiveLegalModal] = useState(null);
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showAdminPanel, setShowAdminPanel] = useState(false);
+    const [adminData, setAdminData] = useState({
+        users: [],
+        subscriptions: [],
+        messages: []
+    });
     const [generatorConfig, setGeneratorConfig] = useState({
         topic: '',
         language: 'Español',
@@ -74,14 +82,29 @@ const App = () => {
 
     // Google Login Real Implementation
     const handleGoogleLogin = useGoogleLogin({
-        onSuccess: tokenResponse => {
-            console.log(tokenResponse);
-            // Normalmente aquí pedirías los datos del usuario con el access_token
+        onSuccess: async (tokenResponse) => {
+            // En una app real, usarías el token para obtener el perfil:
+            const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+            });
+            const profile = await res.json();
+
+            const userData = {
+                name: profile.name,
+                email: profile.email,
+                picture: profile.picture
+            };
+
             setIsLoggedIn(true);
-            setUser({
-                name: 'Usuario RedactaIA',
-                email: 'conectado@google.com',
-                picture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel'
+            setUser(userData);
+
+            // Guardar en Supabase
+            await supabase.from('profiles').upsert({
+                id: profile.sub, // ID único de Google
+                email: profile.email,
+                name: profile.name,
+                picture: profile.picture,
+                last_login: new Date().toISOString()
             });
         },
         onError: () => console.log('Login Failed'),
@@ -90,7 +113,21 @@ const App = () => {
     const handleLogout = () => {
         setIsLoggedIn(false);
         setUser(null);
+        setShowAdminPanel(false);
     };
+
+    const fetchAdminData = async () => {
+        const { data: users } = await supabase.from('profiles').select('*').order('last_login', { ascending: false });
+        const { data: subs } = await supabase.from('subscriptions').select('*').order('created_at', { ascending: false });
+        const { data: msgs } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
+        setAdminData({ users: users || [], subscriptions: subs || [], messages: msgs || [] });
+    };
+
+    useEffect(() => {
+        if (showAdminPanel) {
+            fetchAdminData();
+        }
+    }, [showAdminPanel]);
 
     const handleGenerate = async () => {
         if (!generatorConfig.topic) return;
@@ -240,6 +277,15 @@ const App = () => {
                                             )}
                                         </div>
                                         <img src={user.picture} className={`w-8 h-8 rounded-full ${premiumUsers.includes(user.email) ? 'ring-2 ring-amber-500' : 'ring-2 ring-indigo-500/20'}`} alt="avatar" />
+                                        {user.email === adminEmail && (
+                                            <button
+                                                onClick={() => setShowAdminPanel(true)}
+                                                className="p-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all shadow-sm"
+                                                title="Panel de Administración"
+                                            >
+                                                <Layout className="w-4 h-4" />
+                                            </button>
+                                        )}
                                         <button onClick={handleLogout} className="p-2 hover:text-red-500 transition-colors">
                                             <LogOut className="w-4 h-4" />
                                         </button>
@@ -620,7 +666,14 @@ const App = () => {
                                             });
                                         }}
                                         onApprove={(data, actions) => {
-                                            return actions.order.capture().then((details) => {
+                                            return actions.order.capture().then(async (details) => {
+                                                // Guardar suscripción en DB
+                                                await supabase.from('subscriptions').insert({
+                                                    user_email: user?.email || details.payer.email_address,
+                                                    plan: 'Premium',
+                                                    status: 'active',
+                                                    paypal_order_id: details.id
+                                                });
                                                 alert("¡Gracias " + details.payer.name.given_name + "! Pago recibido. En menos de 2 horas activaremos tus ventajas Premium.");
                                             });
                                         }}
@@ -654,7 +707,14 @@ const App = () => {
                                             });
                                         }}
                                         onApprove={(data, actions) => {
-                                            return actions.order.capture().then((details) => {
+                                            return actions.order.capture().then(async (details) => {
+                                                // Guardar suscripción en DB
+                                                await supabase.from('subscriptions').insert({
+                                                    user_email: user?.email || details.payer.email_address,
+                                                    plan: 'Enterprise',
+                                                    status: 'active',
+                                                    paypal_order_id: details.id
+                                                });
                                                 alert("¡Gracias! Pago de Plan Empresa recibido. En menos de 2 horas nos pondremos en contacto.");
                                             });
                                         }}
@@ -675,12 +735,24 @@ const App = () => {
 
                         <form
                             className="grid md:grid-cols-2 gap-6 text-left"
-                            onSubmit={(e) => {
+                            onSubmit={async (e) => {
                                 e.preventDefault();
                                 const nombre = e.target[0].value;
+                                const email = e.target[1].value;
                                 const mensaje = e.target[2].value;
-                                window.location.href = `mailto:redactaia9@gmail.com?subject=Contacto desde RedactaIA de ${nombre}&body=${mensaje}`;
-                                alert("Se abrirá tu gestor de correo para enviar el mensaje a redactaia9@gmail.com");
+
+                                const { error } = await supabase.from('contact_messages').insert({
+                                    name: nombre,
+                                    email: email,
+                                    message: mensaje
+                                });
+
+                                if (error) {
+                                    alert("Error al enviar el mensaje. Inténtalo de nuevo.");
+                                } else {
+                                    alert("¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.");
+                                    e.target.reset();
+                                }
                             }}
                         >
                             <div className="space-y-2">
@@ -779,6 +851,120 @@ const App = () => {
                                         </div>
                                     </div>
                                 )}
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Admin Panel Modal */}
+                <AnimatePresence>
+                    {showAdminPanel && (
+                        <motion.div
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-2xl"
+                        >
+                            <motion.div
+                                initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
+                                className="bg-white dark:bg-slate-900 w-full max-w-6xl h-[90vh] rounded-[3rem] shadow-2xl flex flex-col overflow-hidden border border-slate-200 dark:border-slate-800"
+                            >
+                                {/* Header Admin */}
+                                <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-primary-600 p-3 rounded-2xl text-white shadow-lg shadow-primary-500/30">
+                                            <Layout size={24} />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-black tracking-tighter">Panel de Control</h2>
+                                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Administración de RedactaIA</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowAdminPanel(false)}
+                                        className="p-3 rounded-full hover:bg-red-500 hover:text-white transition-all bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700"
+                                    >
+                                        <X size={20} />
+                                    </button>
+                                </div>
+
+                                {/* Content Tabs */}
+                                <div className="flex-grow overflow-y-auto p-8">
+                                    <div className="grid lg:grid-cols-3 gap-8">
+                                        {/* Column: Users */}
+                                        <div className="space-y-6">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="text-lg font-black flex items-center gap-2">
+                                                    <Globe className="text-primary-600" size={18} /> Usuarios
+                                                </h3>
+                                                <span className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full text-[10px] font-black">{adminData.users.length}</span>
+                                            </div>
+                                            <div className="space-y-3">
+                                                {adminData.users.map(u => (
+                                                    <div key={u.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 flex items-center gap-3">
+                                                        <img src={u.picture} className="w-10 h-10 rounded-full border-2 border-primary-500/20" alt="" />
+                                                        <div className="min-w-0">
+                                                            <p className="font-bold text-sm truncate">{u.name}</p>
+                                                            <p className="text-[10px] text-slate-500 truncate">{u.email}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Column: Subscriptions */}
+                                        <div className="space-y-6">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="text-lg font-black flex items-center gap-2">
+                                                    <Zap className="text-amber-500" size={18} /> Ventas / Planes
+                                                </h3>
+                                                <span className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full text-[10px] font-black">{adminData.subscriptions.length}</span>
+                                            </div>
+                                            <div className="space-y-3">
+                                                {adminData.subscriptions.map((s, idx) => (
+                                                    <div key={idx} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
+                                                        <div className="flex justify-between items-center mb-1">
+                                                            <span className="text-[10px] font-black uppercase tracking-widest text-primary-600">{s.plan}</span>
+                                                            <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md ${s.status === 'active' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>{s.status}</span>
+                                                        </div>
+                                                        <p className="font-bold text-[11px] truncate">{s.user_email}</p>
+                                                        <p className="text-[9px] text-slate-400 mt-1">{new Date(s.created_at).toLocaleDateString()}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Column: Messages */}
+                                        <div className="space-y-6">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="text-lg font-black flex items-center gap-2">
+                                                    <Mail className="text-indigo-500" size={18} /> Mensajes de Contacto
+                                                </h3>
+                                                <span className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full text-[10px] font-black">{adminData.messages.length}</span>
+                                            </div>
+                                            <div className="space-y-3">
+                                                {adminData.messages.map((m, idx) => (
+                                                    <div key={idx} className="p-5 rounded-3xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm">
+                                                        <div className="flex justify-between items-start mb-3">
+                                                            <div>
+                                                                <p className="font-black text-xs">{m.name}</p>
+                                                                <a href={`mailto:${m.email}`} className="text-[10px] text-primary-600 font-bold hover:underline">{m.email}</a>
+                                                            </div>
+                                                            <span className="text-[8px] text-slate-400 font-bold">{new Date(m.created_at).toLocaleDateString()}</span>
+                                                        </div>
+                                                        <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed italic line-clamp-3">"{m.message}"</p>
+                                                        <button
+                                                            onClick={() => {
+                                                                window.location.href = `mailto:${m.email}?subject=RE: RedactaIA Contacto&body=Hola ${m.name},`;
+                                                            }}
+                                                            className="mt-4 w-full py-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-[10px] font-black hover:bg-primary-600 hover:text-white transition-all"
+                                                        >
+                                                            RESPONDER POR GMAIL
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </motion.div>
                         </motion.div>
                     )}
