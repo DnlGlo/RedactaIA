@@ -60,6 +60,7 @@ const App = () => {
         type: 'Redacción',
         style: 'Formal'
     });
+    const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' or 'annual'
 
     // Theme logic
     useEffect(() => {
@@ -134,9 +135,29 @@ const App = () => {
         if (!generatorConfig.topic) return;
 
         // ESTRATEGIA: Morder el anzuelo. Si no está logueado, mostramos el modal de aviso.
+        // ESTRATEGIA: Morder el anzuelo. Si no está logueado, mostramos el modal de aviso.
         if (!isLoggedIn) {
             setShowLoginModal(true);
             return;
+        }
+
+        // Check Free Tier Limit (5 generations)
+        if (!isPremium) {
+            // Count generations this month
+            const startOfMonth = new Date();
+            startOfMonth.setDate(1);
+            startOfMonth.setHours(0, 0, 0, 0);
+
+            const { count, error } = await supabase
+                .from('generations')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_email', user.email)
+                .gte('created_at', startOfMonth.toISOString());
+
+            if (count >= 5) {
+                alert("🛑 Límite Gratuito Alcanzado\n\nHas usado tus 5 generaciones gratis de este mes. Pásate a Premium para seguir creando sin límites.");
+                return;
+            }
         }
 
         setIsGenerating(true);
@@ -185,6 +206,14 @@ const App = () => {
 
             const text = data.choices[0].message.content;
             setGeneratedText(text);
+
+            // Log generation
+            if (isLoggedIn) {
+                await supabase.from('generations').insert({
+                    user_email: user.email,
+                    content_type: generatorConfig.type
+                });
+            }
         } catch (error) {
             console.error(error);
             setGeneratedText(`ERROR: ${error.message}\n\nIntenta recargar la página o verifica tu clave de Groq.`);
@@ -612,9 +641,25 @@ const App = () => {
                 {/* Pricing Section */}
                 <section id="pricing" className="py-32 bg-white dark:bg-slate-950">
                     <div className="max-w-7xl mx-auto px-4">
-                        <div className="text-center mb-20">
+                        <div className="text-center mb-12">
                             <h2 className="text-4xl md:text-5xl font-black mb-6">Planes para Todos</h2>
-                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">Elige el plan que mejor se adapte a tu volumen de contenido.</p>
+                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium mb-8">Elige el plan que mejor se adapte a tu volumen de contenido.</p>
+
+                            {/* Billing Toggle */}
+                            <div className="flex items-center justify-center gap-4 mb-4">
+                                <span className={`text-sm font-bold ${billingCycle === 'monthly' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>Mensual</span>
+                                <button
+                                    onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'annual' : 'monthly')}
+                                    className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 ${billingCycle === 'annual' ? 'bg-primary-600' : 'bg-slate-300 dark:bg-slate-700'}`}
+                                >
+                                    <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${billingCycle === 'annual' ? 'translate-x-6' : ''}`}></div>
+                                </button>
+                                <span className={`text-sm font-bold ${billingCycle === 'annual' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>Anual <span className="text-emerald-500 text-xs">(Ahorra 20%)</span></span>
+                            </div>
+
+                            <div className="flex items-center justify-center gap-2 text-amber-500 font-bold text-xs uppercase tracking-widest bg-amber-500/10 py-2 px-4 rounded-full inline-block mx-auto">
+                                <ShieldCheck size={14} /> Garantía de devolución de 7 días
+                            </div>
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-8">
@@ -627,7 +672,7 @@ const App = () => {
                                     <span className="text-slate-400 ml-2 font-bold">/siempre</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
-                                    {['10 Generaciones Mensuales', '2 Idiomas Disponibles', '4 Estilos Disponibles', 'Soporte Comunitario'].map(i => (
+                                    {['5 Generaciones Mensuales', '2 Idiomas Disponibles', '4 Estilos Disponibles', 'Soporte Comunitario'].map(i => (
                                         <li key={i} className="flex items-center gap-3 text-sm font-semibold">
                                             <div className="p-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400"><Check size={14} /></div>
                                             <span>{i}</span>
@@ -647,8 +692,8 @@ const App = () => {
                                 <h3 className="text-2xl font-black mb-2">Premium</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Para creadores que necesitan potencia ilimitada.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <span className="text-5xl font-black">19,99€</span>
-                                    <span className="text-slate-400 ml-2 font-bold">/mes</span>
+                                    <span className="text-5xl font-black">{billingCycle === 'monthly' ? '19,99€' : '199€'}</span>
+                                    <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
                                     {['Generaciones ilimitadas', 'Todos los idiomas (11+)', 'Todos los estilos (10+)', 'Exportación HD', 'Soporte prioritario'].map(i => (
@@ -663,7 +708,13 @@ const App = () => {
                                         style={{ layout: "vertical", shape: "pill", label: "subscribe" }}
                                         createOrder={(data, actions) => {
                                             return actions.order.create({
-                                                purchase_units: [{ amount: { value: "19.99", currency_code: "EUR" }, description: "RedactaIA Premium" }]
+                                                purchase_units: [{
+                                                    amount: {
+                                                        value: billingCycle === 'monthly' ? "19.99" : "199.00",
+                                                        currency_code: "EUR"
+                                                    },
+                                                    description: `RedactaIA Premium (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
+                                                }]
                                             });
                                         }}
                                         onApprove={(data, actions) => {
@@ -688,8 +739,8 @@ const App = () => {
                                 <h3 className="text-2xl font-black mb-2">Empresa</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Soluciones a medida para equipos corporativos.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <span className="text-5xl font-black">59,99€</span>
-                                    <span className="text-slate-400 ml-2 font-bold">/mes</span>
+                                    <span className="text-5xl font-black">{billingCycle === 'monthly' ? '59,99€' : '599€'}</span>
+                                    <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
                                     {['Cuentas múltiples (5)', 'Acceso vía API', 'Consultoría de prompts', 'Seguridad nivel bancario'].map(i => (
@@ -704,7 +755,13 @@ const App = () => {
                                         style={{ layout: "vertical", shape: "pill", color: "black" }}
                                         createOrder={(data, actions) => {
                                             return actions.order.create({
-                                                purchase_units: [{ amount: { value: "59.99", currency_code: "EUR" }, description: "RedactaIA Empresa" }]
+                                                purchase_units: [{
+                                                    amount: {
+                                                        value: billingCycle === 'monthly' ? "59.99" : "599.00",
+                                                        currency_code: "EUR"
+                                                    },
+                                                    description: `RedactaIA Empresa (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
+                                                }]
                                             });
                                         }}
                                         onApprove={(data, actions) => {
@@ -1008,7 +1065,7 @@ const App = () => {
                         </div>
                     </div>
                 </footer>
-            <Analytics />
+                <Analytics />
             </div>
         </PayPalScriptProvider>
     );
