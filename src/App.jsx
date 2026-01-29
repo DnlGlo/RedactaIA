@@ -31,6 +31,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { GoogleOAuthProvider, GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import { supabase } from './supabaseClient';
+import { Analytics } from '@vercel/analytics/react';
 
 const adminEmail = 'redactaia9@gmail.com'; // Cambia esto por tu email real de admin
 
