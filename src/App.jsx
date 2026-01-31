@@ -718,122 +718,259 @@ const App = () => {
 
                         <div className="grid md:grid-cols-3 gap-8">
                             {/* Básico */}
-                            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] flex flex-col">
+                            <motion.div 
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: 0.1 }}
+                                whileHover={{ 
+                                    y: -10,
+                                    transition: { duration: 0.3 }
+                                }}
+                                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] flex flex-col hover:shadow-2xl hover:border-primary-500/30 transition-all duration-300"
+                            >
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    whileInView={{ scale: 1 }}
+                                    transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                                    className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6"
+                                >
+                                    <Pen className="text-slate-600 dark:text-slate-400" size={24} />
+                                </motion.div>
                                 <h3 className="text-2xl font-black mb-2">Básico</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Perfecto para proyectos ocasionales y estudiantes.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <span className="text-5xl font-black">{billingCycle === 'monthly' ? '9,99€' : '99€'}</span>
+                                    <motion.span 
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.4, duration: 0.5 }}
+                                        className="text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent"
+                                    >
+                                        {billingCycle === 'monthly' ? '9,99€' : '99€'}
+                                    </motion.span>
                                     <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
-                                    {['50 Generaciones Mensuales', '5 Idiomas Disponibles', '6 Estilos Disponibles', 'Exportación Básica', 'Soporte por Email'].map(i => (
-                                        <li key={i} className="flex items-center gap-3 text-sm font-semibold">
-                                            <div className="p-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400"><Check size={14} /></div>
-                                            <span>{i}</span>
-                                        </li>
+                                    {['50 Generaciones Mensuales', '5 Idiomas Disponibles', '6 Estilos Disponibles', 'Exportación Básica', 'Soporte por Email'].map((item, i) => (
+                                        <motion.li 
+                                            key={i}
+                                            initial={{ opacity: 0, x: -20 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.1 * i, duration: 0.4 }}
+                                            className="flex items-center gap-3 text-sm font-semibold"
+                                        >
+                                            <motion.div 
+                                                initial={{ scale: 0 }}
+                                                whileInView={{ scale: 1, rotate: 360 }}
+                                                transition={{ delay: 0.2 + i * 0.1, type: "spring" }}
+                                                className="p-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400"
+                                            >
+                                                <Check size={14} />
+                                            </motion.div>
+                                            <span>{item}</span>
+                                        </motion.li>
                                     ))}
                                 </ul>
-                                <button className="w-full py-4 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black hover:scale-105 active:scale-95 transition-all shadow-xl">
+                                <motion.button 
+                                    whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="w-full py-4 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black transition-all shadow-xl"
+                                >
                                     Empezar Ahora
-                                </button>
-                            </div>
+                                </motion.button>
+                            </motion.div>
 
                             {/* Premium */}
-                            <div className="relative bg-white dark:bg-slate-900 border-4 border-primary-600 p-10 rounded-[3rem] shadow-2xl shadow-primary-500/20 transform scale-105 z-10 flex flex-col">
-                                <div className="absolute top-0 right-10 -translate-y-1/2 bg-primary-600 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">
-                                    El más popular
-                                </div>
+                            <motion.div 
+                                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                transition={{ duration: 0.6, delay: 0.2 }}
+                                whileHover={{ 
+                                    scale: 1.08,
+                                    transition: { duration: 0.3 }
+                                }}
+                                className="relative bg-white dark:bg-slate-900 border-4 border-primary-600 p-10 rounded-[3rem] shadow-2xl shadow-primary-500/20 z-10 flex flex-col"
+                            >
+                                <motion.div 
+                                    initial={{ x: 100, opacity: 0 }}
+                                    whileInView={{ x: 0, opacity: 1 }}
+                                    transition={{ delay: 0.5, duration: 0.5 }}
+                                    className="absolute top-0 right-10 -translate-y-1/2 bg-gradient-to-r from-primary-600 to-indigo-600 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-lg"
+                                >
+                                    <motion.span
+                                        animate={{ scale: [1, 1.1, 1] }}
+                                        transition={{ duration: 2, repeat: Infinity }}
+                                    >
+                                        El más popular
+                                    </motion.span>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ rotate: 0 }}
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                                    className="w-16 h-16 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
+                                >
+                                    <Sparkles className="text-white" size={24} />
+                                </motion.div>
                                 <h3 className="text-2xl font-black mb-2">Premium</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Para creadores que necesitan potencia ilimitada.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <span className="text-5xl font-black">{billingCycle === 'monthly' ? '19,99€' : '199€'}</span>
+                                    <motion.span 
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.6, duration: 0.5 }}
+                                        className="text-5xl font-black bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent"
+                                    >
+                                        {billingCycle === 'monthly' ? '19,99€' : '199€'}
+                                    </motion.span>
                                     <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
-                                    {['Generaciones ilimitadas', 'Todos los idiomas (11+)', 'Todos los estilos (10+)', 'Exportación HD', 'Soporte prioritario'].map(i => (
-                                        <li key={i} className="flex items-center gap-3 text-sm font-bold">
-                                            <div className="p-1 rounded-full bg-primary-600 text-white"><Check size={14} /></div>
-                                            <span>{i}</span>
-                                        </li>
+                                    {['Generaciones ilimitadas', 'Todos los idiomas (11+)', 'Todos los estilos (10+)', 'Exportación HD', 'Soporte prioritario'].map((item, i) => (
+                                        <motion.li 
+                                            key={i}
+                                            initial={{ opacity: 0, x: -20 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.1 * i + 0.7, duration: 0.4 }}
+                                            className="flex items-center gap-3 text-sm font-bold"
+                                        >
+                                            <motion.div 
+                                                initial={{ scale: 0 }}
+                                                whileInView={{ scale: 1, rotate: 360 }}
+                                                transition={{ delay: 0.2 + i * 0.1 + 0.7, type: "spring" }}
+                                                className="p-1 rounded-full bg-gradient-to-r from-primary-600 to-indigo-600 text-white"
+                                            >
+                                                <Check size={14} />
+                                            </motion.div>
+                                            <span>{item}</span>
+                                        </motion.li>
                                     ))}
                                 </ul>
                                 <div className="mt-auto">
-                                    <PayPalButtons
-                                        style={{ layout: "vertical", shape: "pill", label: "subscribe" }}
-                                        createOrder={(data, actions) => {
-                                            return actions.order.create({
-                                                purchase_units: [{
-                                                    amount: {
-                                                        value: billingCycle === 'monthly' ? "19.99" : "199.00",
-                                                        currency_code: "EUR"
-                                                    },
-                                                    description: `RedactaIA Premium (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
-                                                }]
-                                            });
-                                        }}
-                                        onApprove={(data, actions) => {
-                                            return actions.order.capture().then(async (details) => {
-                                                // Guardar suscripción en DB
-                                                await supabase.from('subscriptions').insert({
-                                                    user_email: user?.email || details.payer.email_address,
-                                                    plan: 'Premium',
-                                                    status: 'active',
-                                                    paypal_order_id: details.id
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 1.2, duration: 0.5 }}
+                                    >
+                                        <PayPalButtons
+                                            style={{ layout: "vertical", shape: "pill", label: "subscribe" }}
+                                            createOrder={(data, actions) => {
+                                                return actions.order.create({
+                                                    purchase_units: [{
+                                                        amount: {
+                                                            value: billingCycle === 'monthly' ? "19.99" : "199.00",
+                                                            currency_code: "EUR"
+                                                        },
+                                                        description: `RedactaIA Premium (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
+                                                    }]
                                                 });
-                                                alert("¡Gracias " + details.payer.name.given_name + "! Pago recibido. En menos de 2 horas activaremos tus ventajas Premium.");
-                                            });
-                                        }}
-                                    />
-                                    <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
+                                            }}
+                                            onApprove={(data, actions) => {
+                                                return actions.order.capture().then(async (details) => {
+                                                    // Guardar suscripción en DB
+                                                    await supabase.from('subscriptions').insert({
+                                                        user_email: user?.email || details.payer.email_address,
+                                                        plan: 'Premium',
+                                                        status: 'active',
+                                                        paypal_order_id: details.id
+                                                    });
+                                                    alert("¡Gracias " + details.payer.name.given_name + "! Pago recibido. En menos de 2 horas activaremos tus ventajas Premium.");
+                                                });
+                                            }}
+                                        />
+                                        <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
+                                    </motion.div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Enterprise */}
-                            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] flex flex-col">
+                            <motion.div 
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: 0.3 }}
+                                whileHover={{ 
+                                    y: -10,
+                                    transition: { duration: 0.3 }
+                                }}
+                                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] flex flex-col hover:shadow-2xl hover:border-slate-400/30 transition-all duration-300"
+                            >
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    whileInView={{ scale: 1 }}
+                                    transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
+                                    className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6"
+                                >
+                                    <ShieldCheck className="text-slate-600 dark:text-slate-400" size={24} />
+                                </motion.div>
                                 <h3 className="text-2xl font-black mb-2">Empresa</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Soluciones a medida para equipos corporativos.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <span className="text-5xl font-black">{billingCycle === 'monthly' ? '59,99€' : '599€'}</span>
+                                    <motion.span 
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.9, duration: 0.5 }}
+                                        className="text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent"
+                                    >
+                                        {billingCycle === 'monthly' ? '59,99€' : '599€'}
+                                    </motion.span>
                                     <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
-                                    {['Cuentas múltiples (5)', 'Acceso vía API', 'Consultoría de prompts', 'Seguridad nivel bancario'].map(i => (
-                                        <li key={i} className="flex items-center gap-3 text-sm font-semibold">
-                                            <div className="p-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400"><Check size={14} /></div>
-                                            <span>{i}</span>
-                                        </li>
+                                    {['Cuentas múltiples (5)', 'Acceso vía API', 'Consultoría de prompts', 'Seguridad nivel bancario'].map((item, i) => (
+                                        <motion.li 
+                                            key={i}
+                                            initial={{ opacity: 0, x: -20 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.1 * i + 1, duration: 0.4 }}
+                                            className="flex items-center gap-3 text-sm font-semibold"
+                                        >
+                                            <motion.div 
+                                                initial={{ scale: 0 }}
+                                                whileInView={{ scale: 1, rotate: 360 }}
+                                                transition={{ delay: 0.2 + i * 0.1 + 1, type: "spring" }}
+                                                className="p-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400"
+                                            >
+                                                <Check size={14} />
+                                            </motion.div>
+                                            <span>{item}</span>
+                                        </motion.li>
                                     ))}
                                 </ul>
                                 <div className="mt-auto">
-                                    <PayPalButtons
-                                        style={{ layout: "vertical", shape: "pill", color: "black" }}
-                                        createOrder={(data, actions) => {
-                                            return actions.order.create({
-                                                purchase_units: [{
-                                                    amount: {
-                                                        value: billingCycle === 'monthly' ? "59.99" : "599.00",
-                                                        currency_code: "EUR"
-                                                    },
-                                                    description: `RedactaIA Empresa (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
-                                                }]
-                                            });
-                                        }}
-                                        onApprove={(data, actions) => {
-                                            return actions.order.capture().then(async (details) => {
-                                                // Guardar suscripción en DB
-                                                await supabase.from('subscriptions').insert({
-                                                    user_email: user?.email || details.payer.email_address,
-                                                    plan: 'Enterprise',
-                                                    status: 'active',
-                                                    paypal_order_id: details.id
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 1.5, duration: 0.5 }}
+                                    >
+                                        <PayPalButtons
+                                            style={{ layout: "vertical", shape: "pill", color: "black" }}
+                                            createOrder={(data, actions) => {
+                                                return actions.order.create({
+                                                    purchase_units: [{
+                                                        amount: {
+                                                            value: billingCycle === 'monthly' ? "59.99" : "599.00",
+                                                            currency_code: "EUR"
+                                                        },
+                                                        description: `RedactaIA Empresa (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
+                                                    }]
                                                 });
-                                                alert("¡Gracias! Pago de Plan Empresa recibido. En menos de 2 horas nos pondremos en contacto.");
-                                            });
-                                        }}
-                                    />
-                                    <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
+                                            }}
+                                            onApprove={(data, actions) => {
+                                                return actions.order.capture().then(async (details) => {
+                                                    // Guardar suscripción en DB
+                                                    await supabase.from('subscriptions').insert({
+                                                        user_email: user?.email || details.payer.email_address,
+                                                        plan: 'Enterprise',
+                                                        status: 'active',
+                                                        paypal_order_id: details.id
+                                                    });
+                                                    alert("¡Gracias! Pago de Plan Empresa recibido. En menos de 2 horas nos pondremos en contacto.");
+                                                });
+                                            }}
+                                        />
+                                        <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
+                                    </motion.div>
                                 </div>
-                            </div>
+                            </motion.div>
                         </div>
                     </div>
                 </section>
