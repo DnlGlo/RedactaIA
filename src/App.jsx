@@ -726,7 +726,7 @@ const App = () => {
                                     y: -10,
                                     transition: { duration: 0.3 }
                                 }}
-                                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] flex flex-col hover:shadow-2xl hover:border-primary-500/30 transition-all duration-300"
+                                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] flex flex-col hover:shadow-2xl hover:border-primary-500/30 transition-all duration-150"
                             >
                                 <motion.div
                                     initial={{ scale: 0 }}
@@ -770,9 +770,10 @@ const App = () => {
                                         </motion.li>
                                     ))}
                                 </ul>
-                                <motion.button 
-                                    whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
-                                    whileTap={{ scale: 0.95 }}
+                                <                                motion.button 
+                                    whileHover={{ scale: 1.03, boxShadow: "0 15px 30px rgba(0,0,0,0.15)" }}
+                                    whileTap={{ scale: 0.97 }}
+                                    transition={{ duration: 0.1 }}
                                     className="w-full py-4 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black transition-all shadow-xl"
                                 >
                                     Empezar Ahora
@@ -785,8 +786,8 @@ const App = () => {
                                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                                 transition={{ duration: 0.6, delay: 0.2 }}
                                 whileHover={{ 
-                                    scale: 1.08,
-                                    transition: { duration: 0.3 }
+                                    scale: 1.05,
+                                    transition: { duration: 0.15, ease: "easeOut" }
                                 }}
                                 className="relative bg-white dark:bg-slate-900 border-4 border-primary-600 p-10 rounded-[3rem] shadow-2xl shadow-primary-500/20 z-10 flex flex-col"
                             >
@@ -888,10 +889,10 @@ const App = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: 0.3 }}
                                 whileHover={{ 
-                                    y: -10,
-                                    transition: { duration: 0.3 }
+                                    y: -8,
+                                    transition: { duration: 0.15, ease: "easeOut" }
                                 }}
-                                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] flex flex-col hover:shadow-2xl hover:border-slate-400/30 transition-all duration-300"
+                                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] flex flex-col hover:shadow-2xl hover:border-slate-400/30 transition-all duration-150"
                             >
                                 <motion.div
                                     initial={{ scale: 0 }}
