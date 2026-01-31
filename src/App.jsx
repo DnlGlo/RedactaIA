@@ -276,6 +276,7 @@ const App = () => {
     };
 
     const navLinks = [
+        { name: 'Características', id: 'features' },
         { name: 'Generador', id: 'generator' },
         { name: 'Precios', id: 'pricing' },
         { name: 'Testimonios', id: 'testimonials' },
@@ -446,9 +447,30 @@ const App = () => {
                     </div>
                 </section>
 
+                {/* Features Section */}
+                <section id="features" className="py-32 bg-slate-50 dark:bg-slate-900/20">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="text-center mb-20">
+                            <h2 className="text-4xl md:text-5xl font-black mb-6">Potencia tu Creatividad</h2>
+                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">Todo lo necesario para que tu comunicación destaque sobre el resto.</p>
+                        </div>
 
-
-
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {[
+                                { title: "Personalización Total", desc: "Elige entre 10+ estilos y tonos para cada texto.", icon: <Palette /> },
+                                { title: "Exportación Fácil", desc: "Copia o descarga tus textos en un solo clic.", icon: <Download /> },
+                                { title: "Seguridad de Datos", desc: "Tus redacciones son privadas y están encriptadas.", icon: <Lock /> },
+                                { title: "Velocidad Ultra", desc: "Genera textos complejos en menos de 5 segundos.", icon: <Zap /> },
+                            ].map((feature, i) => (
+                                <div key={i} className="bg-white dark:bg-slate-800/40 p-8 rounded-3xl border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl hover:-translate-y-1 transition-all">
+                                    <div className="text-primary-600 mb-6">{feature.icon}</div>
+                                    <h4 className="text-lg font-bold mb-2">{feature.title}</h4>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">{feature.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
                 {/* Generator Section */}
                 <section id="generator" className="py-32 px-4 relative">
