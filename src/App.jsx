@@ -1184,8 +1184,8 @@ const App = () => {
                                 <h4 className="font-black mb-8 uppercase tracking-widest text-xs opacity-50">Redes</h4>
                                 <ul className="space-y-4 text-sm font-bold text-slate-500">
                                     <li><a href="https://www.tiktok.com/@redactaia" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 flex items-center gap-2">TikTok <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">@redactaia</span></a></li>
-                                    <li><a href="#" className="hover:text-primary-600">Twitter</a></li>
-                                    <li><a href="#" className="hover:text-primary-600">LinkedIn</a></li>
+                                    <li><a href="mailto:contacto@redactaia.com" className="hover:text-primary-600">Gmail</a></li>
+                                    <li><a href="https://www.linkedin.com/in/daniel-gallego-8778593a8" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600">LinkedIn</a></li>
                                 </ul>
                             </div>
                         </div>
