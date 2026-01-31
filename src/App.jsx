@@ -61,7 +61,6 @@ const App = () => {
         style: 'Formal'
     });
     const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' or 'annual'
-    const [isAnimatingPrice, setIsAnimatingPrice] = useState(false);
 
     // Theme logic
     useEffect(() => {
@@ -702,28 +701,14 @@ const App = () => {
 
                             {/* Billing Toggle */}
                                 <div className="flex items-center justify-center gap-4 mb-4">
-                                <motion.span 
-                                    className={`text-sm font-bold ${billingCycle === 'monthly' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}
-                                    animate={{ opacity: billingCycle === 'monthly' ? 1 : 0.5 }}
-                                >
-                                    Mensual
-                                </motion.span>
+                                <span className={`text-sm font-bold ${billingCycle === 'monthly' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>Mensual</span>
                                 <button
-                                    onClick={() => {
-                                        setIsAnimatingPrice(true);
-                                        setBillingCycle(prev => prev === 'monthly' ? 'annual' : 'monthly');
-                                        setTimeout(() => setIsAnimatingPrice(false), 800);
-                                    }}
+                                    onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'annual' : 'monthly')}
                                     className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 ${billingCycle === 'annual' ? 'bg-primary-600' : 'bg-slate-300 dark:bg-slate-700'}`}
                                 >
                                     <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${billingCycle === 'annual' ? 'translate-x-6' : ''}`}></div>
                                 </button>
-                                <motion.span 
-                                    className={`text-sm font-bold ${billingCycle === 'annual' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}
-                                    animate={{ opacity: billingCycle === 'annual' ? 1 : 0.5 }}
-                                >
-                                    Anual <span className="text-emerald-500 text-xs">(Ahorra 20%)</span>
-                                </motion.span>
+                                <span className={`text-sm font-bold ${billingCycle === 'annual' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>Anual <span className="text-emerald-500 text-xs">(Ahorra 20%)</span></span>
                             </div>
 
                             <div className="flex items-center justify-center gap-2 text-amber-500 font-bold text-xs uppercase tracking-widest bg-amber-500/10 py-2 px-4 rounded-full inline-block mx-auto">
@@ -754,38 +739,14 @@ const App = () => {
                                 <h3 className="text-2xl font-black mb-2">Básico</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Perfecto para proyectos ocasionales y estudiantes.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <div className="relative">
-                                        <span className="text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                                            {billingCycle === 'monthly' ? '9,99' : '99'}
-                                        </span>
-                                        <motion.span 
-                                            key={billingCycle === 'monthly' ? '€' : '€-anual'}
-                                            initial={{ width: 0 }}
-                                            animate={{ width: 'auto' }}
-                                            transition={{ 
-                                                duration: 0.8,
-                                                ease: "easeOut",
-                                                delay: 0.2
-                                            }}
-                                            className="text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent overflow-hidden inline-block"
-                                            style={{ 
-                                                maxWidth: isAnimatingPrice ? '0px' : '50px',
-                                                display: 'inline-block'
-                                            }}
-                                        >
-                                            €
-                                        </motion.span>
-                                        {isAnimatingPrice && (
-                                            <motion.span
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: [0, 1, 1, 0] }}
-                                                transition={{ duration: 0.6 }}
-                                                className="absolute text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent left-0 top-0"
-                                            >
-                                                {billingCycle === 'monthly' ? '99' : '9,99'}
-                                            </motion.span>
-                                        )}
-                                    </div>
+                                    <motion.span 
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.4, duration: 0.5 }}
+                                        className="text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent"
+                                    >
+                                        {billingCycle === 'monthly' ? '9,99€' : '99€'}
+                                    </motion.span>
                                     <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
@@ -854,38 +815,14 @@ const App = () => {
                                 <h3 className="text-2xl font-black mb-2">Premium</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Para creadores que necesitan potencia ilimitada.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <div className="relative">
-                                        <span className="text-5xl font-black bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent">
-                                            {billingCycle === 'monthly' ? '19,99' : '199'}
-                                        </span>
-                                        <motion.span 
-                                            key={`premium-${billingCycle}`}
-                                            initial={{ width: 0 }}
-                                            animate={{ width: 'auto' }}
-                                            transition={{ 
-                                                duration: 0.8,
-                                                ease: "easeOut",
-                                                delay: 0.2
-                                            }}
-                                            className="text-5xl font-black bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent overflow-hidden inline-block"
-                                            style={{ 
-                                                maxWidth: isAnimatingPrice ? '0px' : '50px',
-                                                display: 'inline-block'
-                                            }}
-                                        >
-                                            €
-                                        </motion.span>
-                                        {isAnimatingPrice && (
-                                            <motion.span
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: [0, 1, 1, 0] }}
-                                                transition={{ duration: 0.6 }}
-                                                className="absolute text-5xl font-black bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent left-0 top-0"
-                                            >
-                                                {billingCycle === 'monthly' ? '199' : '19,99'}
-                                            </motion.span>
-                                        )}
-                                    </div>
+                                    <motion.span 
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.6, duration: 0.5 }}
+                                        className="text-5xl font-black bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent"
+                                    >
+                                        {billingCycle === 'monthly' ? '19,99€' : '199€'}
+                                    </motion.span>
                                     <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
@@ -968,38 +905,14 @@ const App = () => {
                                 <h3 className="text-2xl font-black mb-2">Empresa</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Soluciones a medida para equipos corporativos.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <div className="relative">
-                                        <span className="text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                                            {billingCycle === 'monthly' ? '59,99' : '599'}
-                                        </span>
-                                        <motion.span 
-                                            key={`enterprise-${billingCycle}`}
-                                            initial={{ width: 0 }}
-                                            animate={{ width: 'auto' }}
-                                            transition={{ 
-                                                duration: 0.8,
-                                                ease: "easeOut",
-                                                delay: 0.2
-                                            }}
-                                            className="text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent overflow-hidden inline-block"
-                                            style={{ 
-                                                maxWidth: isAnimatingPrice ? '0px' : '50px',
-                                                display: 'inline-block'
-                                            }}
-                                        >
-                                            €
-                                        </motion.span>
-                                        {isAnimatingPrice && (
-                                            <motion.span
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: [0, 1, 1, 0] }}
-                                                transition={{ duration: 0.6 }}
-                                                className="absolute text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent left-0 top-0"
-                                            >
-                                                {billingCycle === 'monthly' ? '599' : '59,99'}
-                                            </motion.span>
-                                        )}
-                                    </div>
+                                    <motion.span 
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.9, duration: 0.5 }}
+                                        className="text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent"
+                                    >
+                                        {billingCycle === 'monthly' ? '59,99€' : '599€'}
+                                    </motion.span>
                                     <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
