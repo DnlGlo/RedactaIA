@@ -134,9 +134,55 @@ const App = () => {
     const handleGenerate = async () => {
         if (!generatorConfig.topic) return;
 
-        // ESTRATEGIA: Morder el anzuelo. Si no está logueado, mostramos el modal de aviso.
-        // ESTRATEGIA: Morder el anzuelo. Si no está logueado, mostramos el modal de aviso.
+        // ESTRATEGIA: Permitir vista previa gratuita, pero login para guardar o generar completo
         if (!isLoggedIn) {
+            setIsGenerating(true);
+            setGeneratedText('Vista previa generada parcialmente. Inicia sesión para ver el resultado completo y guardar tu progreso...');
+            
+            try {
+                const apiKey = import.meta.env.VITE_GROQ_KEY;
+                if (!apiKey) {
+                    throw new Error("La clave de Groq no está configurada.");
+                }
+
+                const previewPrompt = `Actúa como un profesional experto en redacción.
+                Idioma: ${generatorConfig.language}
+                Tipo de texto: ${generatorConfig.type}
+                Estilo: ${generatorConfig.style}
+                Tema: ${generatorConfig.topic}
+
+                GENERA UNA VISTA PREVIA BREVE (2-3 párrafos) del texto completo.
+                El contenido debe estar en ${generatorConfig.language.toUpperCase()}.`;
+
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [
+                            { role: "system", content: "Eres un redactor profesional experto." },
+                            { role: "user", content: previewPrompt }
+                        ],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error?.message || "Error en la API de Groq");
+
+                const text = data.choices[0].message.content;
+                setGeneratedText(`🔒 VISTA PREVIA GRATUITA\n\n${text}\n\n---\n📝 Para obtener el texto completo con más detalle y guardar tus creaciones, inicia sesión gratis con Google.`);
+                
+            } catch (error) {
+                console.error(error);
+                setGeneratedText(`Error en la vista previa. Por favor, inicia sesión para continuar.`);
+            } finally {
+                setIsGenerating(false);
+            }
+            
             setShowLoginModal(true);
             return;
         }
@@ -425,6 +471,81 @@ const App = () => {
                     </div>
                 </section>
 
+                {/* Testimonials Section */}
+                <section id="testimonials" className="py-32 bg-gradient-to-br from-primary-50 to-indigo-50 dark:from-slate-900/40 dark:to-indigo-950/20">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="text-center mb-20">
+                            <h2 className="text-4xl md:text-5xl font-black mb-6">Lo que dicen nuestros usuarios</h2>
+                            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">Más de 2.000 profesionales ya confían en RedactaIA para sus proyectos más importantes.</p>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-8 mb-16">
+                            {[
+                                {
+                                    name: "María García",
+                                    role: "Content Manager",
+                                    company: "Marketing Digital Agency",
+                                    text: "RedactaIA ha reducido nuestro tiempo de creación de contenido en un 70%. Ahora podemos producir 10 veces más contenido de alta calidad.",
+                                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria"
+                                },
+                                {
+                                    name: "Carlos Rodríguez",
+                                    role: "Estudiante Universitario",
+                                    company: "Universidad Complutense",
+                                    text: "Como estudiante, me ayuda a organizar mis ideas y crear ensayos bien estructurados. ¡Mis notas han mejorado mucho!",
+                                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos"
+                                },
+                                {
+                                    name: "Ana Martínez",
+                                    role: "Freelance Writer",
+                                    company: "Independiente",
+                                    text: "Puedo aceptar más proyectos gracias a RedactaIA. La calidad del contenido es excelente y mis clientes están encantados.",
+                                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana"
+                                }
+                            ].map((testimonial, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-700/50 shadow-lg"
+                                >
+                                    <div className="flex items-center mb-6">
+                                        <img src={testimonial.avatar} alt={testimonial.name} className="w-12 h-12 rounded-full mr-4" />
+                                        <div>
+                                            <h4 className="font-bold text-slate-900 dark:text-white">{testimonial.name}</h4>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400">{testimonial.role} • {testimonial.company}</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed italic">"{testimonial.text}"</p>
+                                    <div className="flex mt-4">
+                                        {[...Array(5)].map((_, i) => (
+                                            <span key={i} className="text-amber-400 text-xl">★</span>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* Stats Section */}
+                        <div className="bg-white dark:bg-slate-900 rounded-[3rem] p-12 border border-slate-200 dark:border-slate-800">
+                            <div className="grid md:grid-cols-4 gap-8 text-center">
+                                {[
+                                    { number: "2,000+", label: "Usuarios Activos" },
+                                    { number: "50K+", label: "Textos Generados" },
+                                    { number: "11", label: "Idiomas" },
+                                    { number: "99%", label: "Satisfacción" }
+                                ].map((stat, i) => (
+                                    <div key={i}>
+                                        <div className="text-4xl font-black text-primary-600 mb-2">{stat.number}</div>
+                                        <div className="text-slate-600 dark:text-slate-400 font-medium">{stat.label}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Generator Section */}
                 <section id="generator" className="py-32 px-4 relative">
                     <div className="max-w-5xl mx-auto">
@@ -467,10 +588,15 @@ const App = () => {
                                                         <Zap size={40} />
                                                     </div>
 
-                                                    <h3 className="text-3xl font-black mb-4 tracking-tighter italic">¡Casi lo tienes!</h3>
-                                                    <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium leading-relaxed">
-                                                        He preparado una redacción increíble para ti. Para verla y descargarla, solo necesitas entrar con tu cuenta de Google. <span className="font-bold text-primary-500">¡Es gratis!</span>
+                                                    <h3 className="text-3xl font-black mb-4 tracking-tighter italic">¡Ya tienes una vista previa!</h3>
+                                                    <p className="text-slate-500 dark:text-slate-400 mb-6 font-medium leading-relaxed">
+                                                        Hemos generado una vista previa de tu contenido. Para obtener el texto completo, guardar tus creaciones y seguir generando sin límites, inicia sesión gratis.
                                                     </p>
+                                                    <div className="bg-primary-50 dark:bg-primary-950/20 rounded-2xl p-4 mb-6 border border-primary-200 dark:border-primary-800">
+                                                        <p className="text-sm font-bold text-primary-600 dark:text-primary-400">✅ 5 generaciones gratis al mes</p>
+                                                        <p className="text-sm font-bold text-primary-600 dark:text-primary-400">✅ Guarda tus textos favoritos</p>
+                                                        <p className="text-sm font-bold text-primary-600 dark:text-primary-400">✅ Acceso a historial</p>
+                                                    </div>
 
                                                     <button
                                                         onClick={() => {
@@ -638,12 +764,91 @@ const App = () => {
                     </div>
                 </section>
 
+                {/* Use Cases Section */}
+                <section id="use-cases" className="py-32 bg-white dark:bg-slate-950">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="text-center mb-20">
+                            <h2 className="text-4xl md:text-5xl font-black mb-6">Casos de Uso Populares</h2>
+                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">Descubre cómo miles de profesionales usan RedactaIA para potenciar su trabajo.</p>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[
+                                {
+                                    icon: <FileText className="text-primary-600" />,
+                                    title: "Estudiantes",
+                                    cases: ["Ensayos académicos", "Tareas universitarias", "Resúmenes de lectura", "Trabajos de investigación"]
+                                },
+                                {
+                                    icon: <Share2 className="text-emerald-600" />,
+                                    title: "Marketing Digital",
+                                    cases: ["Posts para redes sociales", "Email marketing", "Contenido para blogs", "Textos para landing pages"]
+                                },
+                                {
+                                    icon: <MessageSquare className="text-blue-600" />,
+                                    title: "Profesionales",
+                                    cases: ["Correos corporativos", "Informes mensuales", "Presentaciones", "Comunicación interna"]
+                                },
+                                {
+                                    icon: <Pen className="text-violet-600" />,
+                                    title: "Redactores Freelance",
+                                    cases: ["Artículos SEO", "Contenido web", "Guiones para videos", "Copwriting"]
+                                },
+                                {
+                                    icon: <Globe className="text-amber-600" />,
+                                    title: "Negocios",
+                                    cases: ["Propuestas comerciales", "Cartas de presentación", "Contenido para clientes", "Documentación técnica"]
+                                },
+                                {
+                                    icon: <Sparkles className="text-rose-600" />,
+                                    title: "Creativos",
+                                    cases: ["Guiones para YouTube", "Historias cortas", "Poesía", "Contenido creativo"]
+                                }
+                            ].map((useCase, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-slate-50 dark:bg-slate-900/40 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 hover:border-primary-500/50 transition-all hover:shadow-xl"
+                                >
+                                    <div className="bg-white dark:bg-slate-800 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                                        {useCase.icon}
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-4">{useCase.title}</h3>
+                                    <ul className="space-y-2">
+                                        {useCase.cases.map((case_item, j) => (
+                                            <li key={j} className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+                                                {case_item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        <div className="text-center mt-16">
+                            <div className="bg-gradient-to-r from-primary-600 to-indigo-600 text-white rounded-[3rem] p-12 max-w-4xl mx-auto shadow-2xl">
+                                <h3 className="text-3xl font-black mb-4">¿Listo para revolucionar tu forma de escribir?</h3>
+                                <p className="text-lg mb-8 opacity-90">Únete a más de 2.000 usuarios que ya están ahorrando tiempo y creando contenido increíble.</p>
+                                <button
+                                    onClick={() => scrollToSection('generator')}
+                                    className="bg-white text-primary-600 px-8 py-4 rounded-full font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-xl"
+                                >
+                                    Probar Gratis Ahora
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Pricing Section */}
                 <section id="pricing" className="py-32 bg-white dark:bg-slate-950">
                     <div className="max-w-7xl mx-auto px-4">
-                        <div className="text-center mb-12">
-                            <h2 className="text-4xl md:text-5xl font-black mb-6">Planes para Todos</h2>
-                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium mb-8">Elige el plan que mejor se adapte a tu volumen de contenido.</p>
+                                <div className="text-center mb-12">
+                            <h2 className="text-4xl md:text-5xl font-black mb-6">Planes para Cada Necesidad</h2>
+                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium mb-8">Desde estudiantes hasta profesionales. Elige tu plan y empieza a crear contenido increíble hoy.</p>
 
                             {/* Billing Toggle */}
                             <div className="flex items-center justify-center gap-4 mb-4">
@@ -663,24 +868,24 @@ const App = () => {
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-8">
-                            {/* Free */}
+                            {/* Básico */}
                             <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] flex flex-col">
-                                <h3 className="text-2xl font-black mb-2">Gratis</h3>
-                                <p className="text-slate-500 mb-8 font-medium">Ideal para probar la herramienta de forma puntual.</p>
+                                <h3 className="text-2xl font-black mb-2">Básico</h3>
+                                <p className="text-slate-500 mb-8 font-medium">Perfecto para proyectos ocasionales y estudiantes.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <span className="text-5xl font-black">0€</span>
-                                    <span className="text-slate-400 ml-2 font-bold">/siempre</span>
+                                    <span className="text-5xl font-black">{billingCycle === 'monthly' ? '9,99€' : '99€'}</span>
+                                    <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
-                                    {['5 Generaciones Mensuales', '2 Idiomas Disponibles', '4 Estilos Disponibles', 'Soporte Comunitario'].map(i => (
+                                    {['50 Generaciones Mensuales', '5 Idiomas Disponibles', '6 Estilos Disponibles', 'Exportación Básica', 'Soporte por Email'].map(i => (
                                         <li key={i} className="flex items-center gap-3 text-sm font-semibold">
                                             <div className="p-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400"><Check size={14} /></div>
                                             <span>{i}</span>
                                         </li>
                                     ))}
                                 </ul>
-                                <button className="w-full py-4 rounded-3xl border-2 border-slate-200 dark:border-slate-700 font-black hover:bg-white dark:hover:bg-slate-800 transition-all">
-                                    Empezar Gratis
+                                <button className="w-full py-4 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black hover:scale-105 active:scale-95 transition-all shadow-xl">
+                                    Empezar Ahora
                                 </button>
                             </div>
 
