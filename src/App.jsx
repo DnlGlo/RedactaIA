@@ -45,7 +45,7 @@ const translations = {
         nav: { features: 'Características', generator: 'Generador', pricing: 'Precios', testimonials: 'Testimonios', contact: 'Contacto', start: 'Empezar' },
         hero: { title_start: 'Genera textos', title_highlight: 'profesionales', title_end: 'con IA en segundos', subtitle: 'La herramienta de inteligencia artificial más potente para crear informes, guiones y contenidos profesionales en segundos.', cta: 'Ir al Generador', social_proof: 'usuarios confían en nosotros', powered: 'Impulsado por Llama 3.3 (Ultra Rápido)' },
         benefits: { speed_title: 'Velocidad Increíble', speed_desc: 'Genera textos complejos en menos de 5 segundos.', quality_title: 'Calidad Premium', quality_desc: 'Resultados con coherencia humana y estilo profesional.', multi_title: 'Multilingüe', multi_desc: 'Disponible en más de 11 idiomas con precisión total.' },
-        generator: { title: 'Generador de IA', subtitle: 'Configura y crea tu texto perfecto.', logged_in: 'Sesión Activa', topic_label: 'Tema o Prompt', topic_placeholder: '¿Sobre qué quieres que escriba hoy?', lang_label: 'Idioma', type_label: 'Tipo', style_label: 'Estilo', generate_btn: '¡Generar ahora!', generating_btn: 'Generando...', free_usage: 'Generaciones Gratuitas' },
+        generator: { title: 'Generador de IA', subtitle: 'Configura y crea tu texto perfecto.', logged_in: 'Sesión Activa', topic_label: 'Tema o Prompt', topic_placeholder: '¿Sobre qué quieres que escriba hoy?', lang_label: 'Idioma', type_label: 'Tipo', style_label: 'Estilo', generate_btn: '¡Generar ahora!', generating_btn: 'Generando...', free_usage: 'Generaciones Gratuitas', result_label: 'Resultado de RedactaIA', copy: 'COPIAR', waiting: 'Esperando tu gran idea...' },
         pricing: {
             title: 'Planes para Cada Necesidad', subtitle: 'Desde estudiantes hasta profesionales. Elige tu plan y empieza a crear contenido increíble hoy.', monthly: 'Mensual', annual: 'Anual', save: 'Ahorra 20%', guarantee: 'Garantía de devolución de 7 días',
             basic_title: 'Básico', basic_desc: 'Perfecto para proyectos ocasionales y estudiantes.',
@@ -57,15 +57,67 @@ const translations = {
             enterprise_features: ['Cuentas múltiples (5)', 'Acceso vía API', 'Consultoría de prompts', 'Seguridad nivel bancario']
         },
         testimonials: { title: 'Lo que dicen nuestros usuarios', subtitle: 'Más de 2.000 profesionales ya confían en RedactaIA para sus proyectos más importantes.' },
-        contact: { title: '¿Alguna duda o problema?', subtitle: 'Nuestro equipo está listo para ayudarte a llevar tu redacción al siguiente nivel.', name: 'Nombre', email: 'Email', message: 'Mensaje', btn: 'Enviar Mensaje' },
+        contact: { title: '¿Alguna duda o problema?', subtitle: 'Nuestro equipo está listo para ayudarte a llevar tu redacción al siguiente nivel.', name: 'Nombre', email: 'Email', message: 'Mensaje', btn: 'Enviar Mensaje', placeholder_name: 'Tu nombre', placeholder_email: 'correo@ejemplo.com', placeholder_msg: '¿En qué podemos ayudarte?' },
         footer: { desc: 'Revolucionando la escritura creativa con inteligencia artificial de última generación. Únete a la nueva era del contenido.', legal: 'Legal', networks: 'Redes', rights: '© 2026 RedactaIA. Todos los derechos reservados. Diseñado para brillar.' },
-        limit_modal: { title: 'Límite Alcanzado', desc_1: 'Has usado tus', desc_2: '5 generaciones gratis', desc_3: 'de este mes.', premium_pitch: 'Los usuarios Premium disfrutan de generaciones ilimitadas y acceso a todos los modelos avanzados.', unlock_btn: 'Desbloquear Todo', maybe_later: 'Quizás luego', reset_note: 'Tu contador se reiniciará el mes que viene.' }
+        limit_modal: { title: 'Límite Alcanzado', desc_1: 'Has usado tus', desc_2: '5 generaciones gratis', desc_3: 'de este mes.', premium_pitch: 'Los usuarios Premium disfrutan de generaciones ilimitadas y acceso a todos los modelos avanzados.', unlock_btn: 'Desbloquear Todo', maybe_later: 'Quizás luego', reset_note: 'Tu contador se reiniciará el mes que viene.' },
+        features_section: {
+            title: 'Potencia tu Creatividad',
+            subtitle: 'Todo lo necesario para que tu comunicación destaque sobre el resto.',
+            f1_title: 'Personalización Total', f1_desc: 'Elige entre 10+ estilos y tonos para cada texto.',
+            f2_title: 'Exportación Fácil', f2_desc: 'Copia o descarga tus textos en un solo clic.',
+            f3_title: 'Seguridad de Datos', f3_desc: 'Tus redacciones son privadas y están encriptadas.',
+            f4_title: 'Velocidad Ultra', f4_desc: 'Genera textos complejos en menos de 5 segundos.'
+        },
+        stats: { users: 'Usuarios Activos', texts: 'Textos Generados', langs: 'Idiomas', satisfaction: 'Satisfacción' },
+        login_modal: {
+            title: '¡Ya tienes una vista previa!',
+            subtitle: 'Hemos generado una vista previa de tu contenido. Para obtener el texto completo, guardar tus creaciones y seguir generando sin límites, inicia sesión gratis.',
+            f1: '5 generaciones gratis al mes', f2: 'Guarda tus textos favoritos', f3: 'Acceso a historial',
+            google_btn: '{t.login_modal.google_btn}'
+        },
+        alerts: {
+            premium_only: '🔒 Esta opción es solo para usuarios Premium. ¡Suscríbete para desbloquear todo el potencial!',
+            contact_success: '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.',
+            contact_error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
+        },
+        legal_content: {
+            privacy: {
+                title: 'Política de Privacidad',
+                intro: 'En RedactaIA, tu privacidad es nuestra prioridad absoluta. Aquí te explicamos cómo tratamos tus datos:',
+                items: [
+                    { b: 'Datos de Registro:', t: 'Solo guardamos tu nombre y email cuando inicias sesión con Google para personalizar tu experiencia.' },
+                    { b: 'Tus Generaciones:', t: 'Los textos que creas no se comparten con terceros ni se utilizan para entrenar otros modelos públicos.' },
+                    { b: 'Seguridad:', t: 'Utilizamos encriptación de grado bancario para proteger toda la comunicación entre tu navegador y Groq.' },
+                    { b: 'Publicidad:', t: 'NO vendemos tus datos a anunciantes ni a ninguna otra empresa.' }
+                ]
+            },
+            terms: {
+                title: 'Términos del Servicio',
+                intro: 'Al utilizar RedactaIA, aceptas las siguientes condiciones:',
+                items: [
+                    { b: 'Uso Responsable:', t: 'Te comprometes a no usar la IA para generar contenido de odio, ilegal o fraudulento.' },
+                    { b: 'Propiedad:', t: 'El texto generado es tuyo. Puedes usarlo para fines comerciales o personales sin restricciones.' },
+                    { b: 'Suscripciones:', t: 'Los pagos se procesan vía PayPal. Puedes cancelar tu suscripción en cualquier momento desde tu panel.' },
+                    { b: 'Limitación:', t: 'Aunque usamos lo último en IA (Llama 3.3), revisa siempre el contenido para asegurar su exactitud profesional.' }
+                ]
+            },
+            cookies: {
+                title: 'Política de Cookies',
+                intro: 'Usamos cookies esenciales para que la plataforma funcione correctamente:',
+                items: [
+                    { b: 'Sesión:', t: 'Para mantener tu cuenta activa mientras navegas.' },
+                    { b: 'Preferencias:', t: 'Para recordar si prefieres el modo oscuro o tu idioma seleccionado.' },
+                    { b: 'Rendimiento:', t: 'Usamos Vercel Analytics de forma anónima para entender cómo mejorar la velocidad del sitio.' },
+                    { b: 'No rastreo:', t: 'No usamos cookies de rastreo publicitario de terceros.' }
+                ]
+            }
+        }
     },
     pt: {
         nav: { features: 'Recursos', generator: 'Gerador', pricing: 'Preços', testimonials: 'Depoimentos', contact: 'Contato', start: 'Começar' },
         hero: { title_start: 'Gere textos', title_highlight: 'profissionais', title_end: 'com IA em segundos', subtitle: 'A ferramenta de inteligência artificial mais poderosa para criar relatórios, roteiros e conteúdos profissionais em segundos.', cta: 'Ir para o Gerador', social_proof: 'usuários confiam em nós', powered: 'Impulsionado por Llama 3.3 (Ultra Rápido)' },
         benefits: { speed_title: 'Velocidade Incrível', speed_desc: 'Gere textos complexos em menos de 5 segundos.', quality_title: 'Qualidade Premium', quality_desc: 'Resultados com coerência humana e estilo profissional.', multi_title: 'Multilíngue', multi_desc: 'Disponível em mais de 11 idiomas com precisão total.' },
-        generator: { title: 'Gerador de IA', subtitle: 'Configure e crie seu texto perfeito.', logged_in: 'Sessão Ativa', topic_label: 'Tema ou Prompt', topic_placeholder: 'Sobre o que você quer que eu escreva hoje?', lang_label: 'Idioma', type_label: 'Tipo', style_label: 'Estilo', generate_btn: 'Gerar agora!', generating_btn: 'Gerando...', free_usage: 'Gerações Gratuitas' },
+        generator: { title: 'Gerador de IA', subtitle: 'Configure e crie seu texto perfeito.', logged_in: 'Sessão Ativa', topic_label: 'Tema ou Prompt', topic_placeholder: 'Sobre o que você quer que eu escreva hoje?', lang_label: 'Idioma', type_label: 'Tipo', style_label: 'Estilo', generate_btn: 'Gerar agora!', generating_btn: 'Gerando...', free_usage: 'Gerações Gratuitas', result_label: 'Resultado da RedactaIA', copy: 'COPIAR', waiting: 'Esperando sua grande ideia...' },
         pricing: {
             title: 'Planos para Cada Necessidade', subtitle: 'De estudantes a profissionais. Escolha seu plano e comece a criar conteúdo incrível hoje.', monthly: 'Mensal', annual: 'Anual', save: 'Economize 20%', guarantee: 'Garantia de reembolso de 7 dias',
             basic_title: 'Básico', basic_desc: 'Perfeito para projetos ocasionais e estudantes.',
@@ -77,15 +129,67 @@ const translations = {
             enterprise_features: ['Múltiplas contas (5)', 'Acesso via API', 'Consultoria de prompts', 'Segurança nível bancário']
         },
         testimonials: { title: 'O que dizem nossos usuários', subtitle: 'Mais de 2.000 profissionais já confiam na RedactaIA para seus projetos mais importantes.' },
-        contact: { title: 'Alguma dúvida ou problema?', subtitle: 'Nossa equipe está pronta para ajudar você a levar sua redação para o próximo nível.', name: 'Nome', email: 'Email', message: 'Mensagem', btn: 'Enviar Mensagem' },
+        contact: { title: 'Alguma dúvida ou problema?', subtitle: 'Nossa equipe está pronta para ajudar você a levar sua redação para o próximo nível.', name: 'Nome', email: 'Email', message: 'Mensagem', btn: 'Enviar Mensagem', placeholder_name: 'Seu nome', placeholder_email: 'email@exemplo.com', placeholder_msg: 'Como podemos ajudar?' },
         footer: { desc: 'Revolucionando a escrita criativa com inteligência artificial de última geração. Junte-se à nova era do conteúdo.', legal: 'Legal', networks: 'Redes', rights: '© 2026 RedactaIA. Todos os direitos reservados. Projetado para brilhar.' },
-        limit_modal: { title: 'Limite Alcançado', desc_1: 'Você usou suas', desc_2: '5 gerações gratuitas', desc_3: 'neste mês.', premium_pitch: 'Usuários Premium desfrutam de gerações ilimitadas e acesso a todos os modelos avançados.', unlock_btn: 'Desbloquear Tudo', maybe_later: 'Talvez depois', reset_note: 'Seu contador será reiniciado no próximo mês.' }
+        limit_modal: { title: 'Limite Alcançado', desc_1: 'Você usou suas', desc_2: '5 gerações gratuitas', desc_3: 'neste mês.', premium_pitch: 'Usuários Premium desfrutam de gerações ilimitadas e acesso a todos os modelos avançados.', unlock_btn: 'Desbloquear Tudo', maybe_later: 'Talvez depois', reset_note: 'Seu contador será reiniciado no próximo mês.' },
+        features_section: {
+            title: 'Aumente sua Criatividade',
+            subtitle: 'Tudo o que você precisa para que sua comunicação se destaque das demais.',
+            f1_title: 'Personalização Total', f1_desc: 'Escolha entre mais de 10 estilos e tons para cada texto.',
+            f2_title: 'Exportação Fácil', f2_desc: 'Copie ou baixe seus textos com apenas um clique.',
+            f3_title: 'Segurança de Dados', f3_desc: 'Suas redações são privadas e criptografadas.',
+            f4_title: 'Velocidade Ultra', f4_desc: 'Gere textos complexos em menos de 5 segundos.'
+        },
+        stats: { users: 'Usuários Ativos', texts: 'Textos Gerados', langs: 'Idiomas', satisfaction: 'Satisfação' },
+        login_modal: {
+            title: 'Você já tem uma prévia!',
+            subtitle: 'Geramos uma prévia do seu conteúdo. Para obter o texto completo, salvar suas criações e continuar gerando sem limites, faça login gratuitamente.',
+            f1: '5 gerações gratuitas por mês', f2: 'Salve seus textos favoritos', f3: 'Acesso ao histórico',
+            google_btn: 'ENTRAR COM GOOGLE'
+        },
+        alerts: {
+            premium_only: '🔒 Esta opção é apenas para usuários Premium. Assine para desbloquear todo o potencial!',
+            contact_success: 'Mensagem enviada com sucesso! Entraremos em contato em breve.',
+            contact_error: 'Erro ao enviar a mensagem. Tente novamente.'
+        },
+        legal_content: {
+            privacy: {
+                title: 'Política de Privacidade',
+                intro: 'Na RedactaIA, sua privacidade é nossa prioridade absoluta. Aqui explicamos como tratamos seus dados:',
+                items: [
+                    { b: 'Dados de Registro:', t: 'Apenas guardamos seu nome e email quando você faz login com o Google para personalizar sua experiência.' },
+                    { b: 'Suas Gerações:', t: 'Os textos que você cria não são compartilhados com terceiros nem usados para treinar outros modelos públicos.' },
+                    { b: 'Segurança:', t: 'Usamos criptografia de nível bancário para proteger toda a comunicação entre seu navegador e o Groq.' },
+                    { b: 'Publicidade:', t: 'NÃO vendemos seus dados para anunciantes ou qualquer outra empresa.' }
+                ]
+            },
+            terms: {
+                title: 'Termos de Serviço',
+                intro: 'Ao usar a RedactaIA, você aceita as seguintes condições:',
+                items: [
+                    { b: 'Uso Responsável:', t: 'Você se compromete a não usar a IA para gerar conteúdo de ódio, ilegal ou fraudulento.' },
+                    { b: 'Propriedade:', t: 'O texto gerado é seu. Você pode usá-lo para fins comerciais ou pessoais sem restrições.' },
+                    { b: 'Assinaturas:', t: 'Os pagamentos são processados via PayPal. Você pode cancelar sua assinatura a qualquer momento no seu painel.' },
+                    { b: 'Limitação:', t: 'Embora usemos o que há de mais moderno em IA (Llama 3.3), sempre revise o conteúdo para garantir sua precisão profissional.' }
+                ]
+            },
+            cookies: {
+                title: 'Política de Cookies',
+                intro: 'Usamos cookies essenciais para que a plataforma funcione corretamente:',
+                items: [
+                    { b: 'Sessão:', t: 'Para manter sua conta ativa enquanto navega.' },
+                    { b: 'Preferências:', t: 'Para lembrar se você prefere o modo escuro ou o idioma selecionado.' },
+                    { b: 'Desempenho:', t: 'Usamos Vercel Analytics de forma anônima para entender como melhorar a velocidade do site.' },
+                    { b: 'Sem rastreamento:', t: 'Não usamos cookies de rastreamento publicitário de terceiros.' }
+                ]
+            }
+        }
     },
     en: {
         nav: { features: 'Features', generator: 'Generator', pricing: 'Pricing', testimonials: 'Testimonials', contact: 'Contact', start: 'Start' },
         hero: { title_start: 'Generate', title_highlight: 'professional', title_end: 'AI texts in seconds', subtitle: 'The most powerful AI tool to create reports, scripts, and professional content in seconds.', cta: 'Go to Generator', social_proof: 'users trust us', powered: 'Powered by Llama 3.3 (Ultra Fast)' },
         benefits: { speed_title: 'Incredible Speed', speed_desc: 'Generate complex texts in less than 5 seconds.', quality_title: 'Premium Quality', quality_desc: 'Results with human coherence and professional style.', multi_title: 'Multilingual', multi_desc: 'Available in over 11 languages with total precision.' },
-        generator: { title: 'AI Generator', subtitle: 'Configure and create your perfect text.', logged_in: 'Active Session', topic_label: 'Topic or Prompt', topic_placeholder: 'What do you want me to write about today?', lang_label: 'Language', type_label: 'Type', style_label: 'Style', generate_btn: 'Generate Now!', generating_btn: 'Generating...', free_usage: 'Free Generations' },
+        generator: { title: 'AI Generator', subtitle: 'Configure and create your perfect text.', logged_in: 'Active Session', topic_label: 'Topic or Prompt', topic_placeholder: 'What do you want me to write about today?', lang_label: 'Language', type_label: 'Type', style_label: 'Style', generate_btn: 'Generate Now!', generating_btn: 'Generating...', free_usage: 'Free Generations', result_label: 'RedactaIA Result', copy: 'COPY', waiting: 'Waiting for your big idea...' },
         pricing: {
             title: 'Plans for Every Need', subtitle: 'From students to professionals. Choose your plan and start creating amazing content today.', monthly: 'Monthly', annual: 'Annual', save: 'Save 20%', guarantee: '7-day money-back guarantee',
             basic_title: 'Basic', basic_desc: 'Perfect for occasional projects and students.',
@@ -97,9 +201,61 @@ const translations = {
             enterprise_features: ['Multiple accounts (5)', 'API Access', 'Prompt Consulting', 'Bank-level Security']
         },
         testimonials: { title: 'What our users say', subtitle: 'More than 2,000 professionals already trust RedactaIA for their most important projects.' },
-        contact: { title: 'Any questions or issues?', subtitle: 'Our team is ready to help you take your writing to the next level.', name: 'Name', email: 'Email', message: 'Message', btn: 'Send Message' },
+        contact: { title: 'Any questions or issues?', subtitle: 'Our team is ready to help you take your writing to the next level.', name: 'Name', email: 'Email', message: 'Message', btn: 'Send Message', placeholder_name: 'Your name', placeholder_email: 'email@example.com', placeholder_msg: 'How can we help you?' },
         footer: { desc: 'Revolutionizing creative writing with state-of-the-art artificial intelligence. Join the new era of content.', legal: 'Legal', networks: 'Networks', rights: '© 2026 RedactaIA. All rights reserved. Designed to shine.' },
-        limit_modal: { title: 'Limit Reached', desc_1: 'You have used your', desc_2: '5 free generations', desc_3: 'this month.', premium_pitch: 'Premium users enjoy unlimited generations and access to all advanced models.', unlock_btn: 'Unlock All', maybe_later: 'Maybe later', reset_note: 'Your counter will reset next month.' }
+        limit_modal: { title: 'Limit Reached', desc_1: 'You have used your', desc_2: '5 free generations', desc_3: 'this month.', premium_pitch: 'Premium users enjoy unlimited generations and access to all advanced models.', unlock_btn: 'Unlock All', maybe_later: 'Maybe later', reset_note: 'Your counter will reset next month.' },
+        features_section: {
+            title: 'Boost Your Creativity',
+            subtitle: 'Everything you need to make your communication stand out from the rest.',
+            f1_title: 'Total Customization', f1_desc: 'Choose from 10+ styles and tones for each text.',
+            f2_title: 'Easy Export', f2_desc: 'Copy or download your texts in a single click.',
+            f3_title: 'Data Security', f3_desc: 'Your writings are private and encrypted.',
+            f4_title: 'Ultra Speed', f4_desc: 'Generate complex texts in less than 5 seconds.'
+        },
+        stats: { users: 'Active Users', texts: 'Texts Generated', langs: 'Languages', satisfaction: 'Satisfaction' },
+        login_modal: {
+            title: 'You already have a preview!',
+            subtitle: 'We have generated a preview of your content. To get the full text, save your creations and continue generating without limits, log in for free.',
+            f1: '5 free generations per month', f2: 'Save your favorite texts', f3: 'Access to history',
+            google_btn: 'SIGN IN WITH GOOGLE'
+        },
+        alerts: {
+            premium_only: '🔒 This option is for Premium users only. Subscribe to unlock full potential!',
+            contact_success: 'Message sent successfully! We will get in touch with you soon.',
+            contact_error: 'Error sending message. Please try again.'
+        },
+        legal_content: {
+            privacy: {
+                title: 'Privacy Policy',
+                intro: 'At RedactaIA, your privacy is our top priority. Here we explain how we handle your data:',
+                items: [
+                    { b: 'Registration Data:', t: 'We only save your name and email when you log in with Google to personalize your experience.' },
+                    { b: 'Your Generations:', t: 'The texts you create are not shared with third parties or used to train other public models.' },
+                    { b: 'Security:', t: 'We use bank-grade encryption to protect all communication between your browser and Groq.' },
+                    { b: 'Advertising:', t: 'We do NOT sell your data to advertisers or any other company.' }
+                ]
+            },
+            terms: {
+                title: 'Terms of Service',
+                intro: 'By using RedactaIA, you accept the following conditions:',
+                items: [
+                    { b: 'Responsible Use:', t: 'You commit not to use AI to generate hate, illegal, or fraudulent content.' },
+                    { b: 'Ownership:', t: 'The generated text is yours. You can use it for commercial or personal purposes without restrictions.' },
+                    { b: 'Subscriptions:', t: 'Payments are processed via PayPal. You can cancel your subscription at any time from your dashboard.' },
+                    { b: 'Limitation:', t: 'Although we use the latest in AI (Llama 3.3), always review the content to ensure its professional accuracy.' }
+                ]
+            },
+            cookies: {
+                title: 'Cookie Policy',
+                intro: 'We use essential cookies for the platform to work correctly:',
+                items: [
+                    { b: 'Session:', t: 'To keep your account active while you browse.' },
+                    { b: 'Preferences:', t: 'To remember if you prefer dark mode or your selected language.' },
+                    { b: 'Performance:', t: 'We use Vercel Analytics anonymously to understand how to improve site speed.' },
+                    { b: 'No tracking:', t: 'We do not use third-party advertising tracking cookies.' }
+                ]
+            }
+        }
     }
 };
 
@@ -437,11 +593,11 @@ const App = () => {
                                     <select
                                         value={lang}
                                         onChange={(e) => setLang(e.target.value)}
-                                        className="appearance-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-sm py-2.5 pl-4 pr-8 rounded-full cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="appearance-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-sm py-2.5 px-6 rounded-full cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors outline-none focus:ring-2 focus:ring-primary-500"
                                     >
-                                        <option value="es">🇪🇸 ES</option>
-                                        <option value="pt">🇧🇷 PT</option>
-                                        <option value="en">🇺🇸 EN</option>
+                                        <option value="es">Español</option>
+                                        <option value="pt">Português</option>
+                                        <option value="en">English</option>
                                     </select>
                                     <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
                                 </div>
@@ -550,16 +706,16 @@ const App = () => {
                 <section id="features" className="py-32 bg-slate-50 dark:bg-slate-900/20">
                     <div className="max-w-7xl mx-auto px-4">
                         <div className="text-center mb-20">
-                            <h2 className="text-4xl md:text-5xl font-black mb-6">Potencia tu Creatividad</h2>
-                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">Todo lo necesario para que tu comunicación destaque sobre el resto.</p>
+                            <h2 className="text-4xl md:text-5xl font-black mb-6">{t.features_section.title}</h2>
+                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">{t.features_section.subtitle}</p>
                         </div>
 
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {[
-                                { title: "Personalización Total", desc: "Elige entre 10+ estilos y tonos para cada texto.", icon: <Palette /> },
-                                { title: "Exportación Fácil", desc: "Copia o descarga tus textos en un solo clic.", icon: <Download /> },
-                                { title: "Seguridad de Datos", desc: "Tus redacciones son privadas y están encriptadas.", icon: <Lock /> },
-                                { title: "Velocidad Ultra", desc: "Genera textos complejos en menos de 5 segundos.", icon: <Zap /> },
+                                { title: t.features_section.f1_title, desc: t.features_section.f1_desc, icon: <Palette /> },
+                                { title: t.features_section.f2_title, desc: t.features_section.f2_desc, icon: <Download /> },
+                                { title: t.features_section.f3_title, desc: t.features_section.f3_desc, icon: <Lock /> },
+                                { title: t.features_section.f4_title, desc: t.features_section.f4_desc, icon: <Zap /> },
                             ].map((feature, i) => (
                                 <div key={i} className="bg-white dark:bg-slate-800/40 p-8 rounded-3xl border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl hover:-translate-y-1 transition-all">
                                     <div className="text-primary-600 mb-6">{feature.icon}</div>
@@ -587,7 +743,7 @@ const App = () => {
                                     {isLoggedIn && (
                                         <div className="bg-emerald-500/10 text-emerald-500 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
                                             <Unlock size={14} />
-                                            Sesión Activa
+                                            {t.generator.logged_in}
                                         </div>
                                     )}
                                 </div>
@@ -613,14 +769,14 @@ const App = () => {
                                                         <Zap size={40} />
                                                     </div>
 
-                                                    <h3 className="text-3xl font-black mb-4 tracking-tighter italic">¡Ya tienes una vista previa!</h3>
+                                                    <h3 className="text-3xl font-black mb-4 tracking-tighter italic">{t.login_modal.title}</h3>
                                                     <p className="text-slate-500 dark:text-slate-400 mb-6 font-medium leading-relaxed">
-                                                        Hemos generado una vista previa de tu contenido. Para obtener el texto completo, guardar tus creaciones y seguir generando sin límites, inicia sesión gratis.
+                                                        {t.login_modal.subtitle}
                                                     </p>
                                                     <div className="bg-primary-50 dark:bg-primary-950/20 rounded-2xl p-4 mb-6 border border-primary-200 dark:border-primary-800">
-                                                        <p className="text-sm font-bold text-primary-600 dark:text-primary-400">✅ 5 generaciones gratis al mes</p>
-                                                        <p className="text-sm font-bold text-primary-600 dark:text-primary-400">✅ Guarda tus textos favoritos</p>
-                                                        <p className="text-sm font-bold text-primary-600 dark:text-primary-400">✅ Acceso a historial</p>
+                                                        <p className="text-sm font-bold text-primary-600 dark:text-primary-400">✅ {t.login_modal.f1}</p>
+                                                        <p className="text-sm font-bold text-primary-600 dark:text-primary-400">✅ {t.login_modal.f2}</p>
+                                                        <p className="text-sm font-bold text-primary-600 dark:text-primary-400">✅ {t.login_modal.f3}</p>
                                                     </div>
 
                                                     <button
@@ -636,7 +792,7 @@ const App = () => {
                                                             <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
                                                             <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                                                         </svg>
-                                                        ENTRAR CON GOOGLE
+                                                        {t.login_modal.google_btn}
                                                     </button>
                                                 </motion.div>
                                             </motion.div>
@@ -671,7 +827,7 @@ const App = () => {
                                                                 value={generatorConfig.language}
                                                                 onChange={(e) => {
                                                                     if (!isPremium && !freeLanguages.includes(e.target.value)) {
-                                                                        alert("🔒 Esta opción es solo para usuarios Premium. ¡Suscríbete para desbloquear todos los idiomas!");
+                                                                        alert(t.alerts.premium_only);
                                                                         return;
                                                                     }
                                                                     setGeneratorConfig({ ...generatorConfig, language: e.target.value });
@@ -769,7 +925,7 @@ const App = () => {
                                                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700">
                                                     <span className="text-primary-600 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
                                                         <div className="w-2 h-2 rounded-full bg-primary-600 animate-pulse"></div>
-                                                        Resultado de RedactaIA
+                                                        {t.generator.result_label}
                                                     </span>
                                                     <div className="flex gap-2">
                                                         <button
@@ -779,7 +935,7 @@ const App = () => {
                                                             }}
                                                             className="group p-3 rounded-xl bg-white dark:bg-slate-700 hover:bg-primary-600 hover:text-white transition-all border border-slate-200 dark:border-slate-600 shadow-sm flex items-center gap-2 text-xs font-bold"
                                                         >
-                                                            <Copy size={14} /> <span>COPIAR</span>
+                                                            <Copy size={14} /> <span>{t.generator.copy}</span>
                                                         </button>
                                                         <button onClick={() => alert('Función próximamente')} className="p-3 rounded-xl bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-all border border-slate-200 dark:border-slate-600 shadow-sm">
                                                             <Download size={14} />
@@ -795,7 +951,7 @@ const App = () => {
                                                             <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center animate-bounce">
                                                                 <MessageSquare size={32} className="opacity-40" />
                                                             </div>
-                                                            <p className="max-w-[250px] font-bold text-sm uppercase tracking-widest">Esperando tu gran idea...</p>
+                                                            <p className="max-w-[250px] font-bold text-sm uppercase tracking-widest">{t.generator.waiting}</p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -1075,18 +1231,11 @@ const App = () => {
                                             }}
                                             onApprove={(data, actions) => {
                                                 return actions.order.capture().then(async (details) => {
-                                                    // Guardar suscripción en DB
-                                                    await supabase.from('subscriptions').insert({
-                                                        user_email: user?.email || details.payer.email_address,
-                                                        plan: 'Enterprise',
-                                                        status: 'active',
-                                                        paypal_order_id: details.id
-                                                    });
-                                                    alert("¡Gracias! Pago de Plan Empresa recibido. En menos de 2 horas nos pondremos en contacto.");
+                                                    alert(t.alerts.contact_success);
                                                 });
                                             }}
                                         />
-                                        <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
+                                        <p className="text-[10px] text-center mt-4 opacity-50 font-bold">{t.pricing.enterprise_manual}</p>
                                     </motion.div>
                                 </div>
                             </motion.div>
@@ -1140,7 +1289,7 @@ const App = () => {
                                             <p className="text-sm text-slate-500 dark:text-slate-400">{testimonial.role} • {testimonial.company}</p>
                                         </div>
                                     </div>
-                                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed italic">"{testimonial.text}"</p>
+                                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed italic">{`"${testimonial.text}"`}</p>
                                     <div className="flex mt-4">
                                         {[...Array(5)].map((_, i) => (
                                             <span key={i} className="text-amber-400 text-xl">★</span>
@@ -1154,10 +1303,10 @@ const App = () => {
                         <div className="bg-white dark:bg-slate-900 rounded-[3rem] p-12 border border-slate-200 dark:border-slate-800">
                             <div className="grid md:grid-cols-4 gap-8 text-center">
                                 {[
-                                    { number: "2,000+", label: "Usuarios Activos" },
-                                    { number: "50K+", label: "Textos Generados" },
-                                    { number: "11", label: "Idiomas" },
-                                    { number: "99%", label: "Satisfacción" }
+                                    { number: "2,000+", label: t.stats.users },
+                                    { number: "50K+", label: t.stats.texts },
+                                    { number: "11", label: t.stats.langs },
+                                    { number: "99%", label: t.stats.satisfaction }
                                 ].map((stat, i) => (
                                     <div key={i}>
                                         <div className="text-4xl font-black text-primary-600 mb-2">{stat.number}</div>
@@ -1200,15 +1349,15 @@ const App = () => {
                         >
                             <div className="space-y-2">
                                 <label className="text-xs font-black uppercase tracking-widest text-slate-400">{t.contact.name}</label>
-                                <input required className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder="Tu nombre" />
+                                <input required className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder={t.contact.placeholder_name} />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-black uppercase tracking-widest text-slate-400">{t.contact.email}</label>
-                                <input required type="email" className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder="correo@ejemplo.com" />
+                                <input required type="email" className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder={t.contact.placeholder_email} />
                             </div>
                             <div className="md:col-span-2 space-y-2">
                                 <label className="text-xs font-black uppercase tracking-widest text-slate-400">{t.contact.message}</label>
-                                <textarea required className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500 h-32 resize-none" placeholder="¿En qué podemos ayudarte?"></textarea>
+                                <textarea required className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500 h-32 resize-none" placeholder={t.contact.placeholder_msg}></textarea>
                             </div>
                             <button type="submit" className="md:col-span-2 py-5 bg-primary-600 rounded-2xl font-black hover:bg-primary-500 transition-all shadow-xl shadow-primary-600/20">
                                 {t.contact.btn}
@@ -1246,14 +1395,13 @@ const App = () => {
                                         <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 mb-6">
                                             <ShieldCheck size={32} />
                                         </div>
-                                        <h2 className="text-3xl font-black tracking-tighter">Política de Privacidad</h2>
+                                        <h2 className="text-3xl font-black tracking-tighter">{t.legal_content.privacy.title}</h2>
                                         <div className="space-y-4 text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
-                                            <p>En <span className="font-bold text-slate-900 dark:text-white">RedactaIA</span>, tu privacidad es nuestra prioridad absoluta. Aquí te explicamos cómo tratamos tus datos:</p>
+                                            <p>{t.legal_content.privacy.intro}</p>
                                             <ul className="list-disc pl-5 space-y-2">
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Datos de Registro:</span> Solo guardamos tu nombre y email cuando inicias sesión con Google para personalizar tu experiencia.</li>
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Tus Generaciones:</span> Los textos que creas no se comparten con terceros ni se utilizan para entrenar otros modelos públicos.</li>
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Seguridad:</span> Utilizamos encriptación de grado bancario para proteger toda la comunicación entre tu navegador y Groq.</li>
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Publicidad:</span> NO vendemos tus datos a anunciantes ni a ninguna otra empresa.</li>
+                                                {t.legal_content.privacy.items.map((item, i) => (
+                                                    <li key={i}><span className="font-bold text-slate-900 dark:text-white">{item.b}</span> {item.t}</li>
+                                                ))}
                                             </ul>
                                         </div>
                                     </div>
@@ -1264,14 +1412,13 @@ const App = () => {
                                         <div className="w-16 h-16 bg-primary-500/10 rounded-2xl flex items-center justify-center text-primary-500 mb-6">
                                             <FileText size={32} />
                                         </div>
-                                        <h2 className="text-3xl font-black tracking-tighter">Términos del Servicio</h2>
+                                        <h2 className="text-3xl font-black tracking-tighter">{t.legal_content.terms.title}</h2>
                                         <div className="space-y-4 text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
-                                            <p>Al utilizar RedactaIA, aceptas las siguientes condiciones:</p>
+                                            <p>{t.legal_content.terms.intro}</p>
                                             <ul className="list-disc pl-5 space-y-2">
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Uso Responsable:</span> Te comprometes a no usar la IA para generar contenido de odio, ilegal o fraudulento.</li>
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Propiedad:</span> El texto generado es tuyo. Puedes usarlo para fines comerciales o personales sin restricciones.</li>
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Suscripciones:</span> Los pagos se procesan vía PayPal. Puedes cancelar tu suscripción en cualquier momento desde tu panel.</li>
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Limitación:</span> Aunque usamos lo último en IA (Llama 3.3), revisa siempre el contenido para asegurar su exactitud profesional.</li>
+                                                {t.legal_content.terms.items.map((item, i) => (
+                                                    <li key={i}><span className="font-bold text-slate-900 dark:text-white">{item.b}</span> {item.t}</li>
+                                                ))}
                                             </ul>
                                         </div>
                                     </div>
@@ -1282,14 +1429,13 @@ const App = () => {
                                         <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 mb-6">
                                             <Moon size={32} />
                                         </div>
-                                        <h2 className="text-3xl font-black tracking-tighter">Política de Cookies</h2>
+                                        <h2 className="text-3xl font-black tracking-tighter">{t.legal_content.cookies.title}</h2>
                                         <div className="space-y-4 text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
-                                            <p>Usamos solo las cookies necesarias para que tu experiencia sea perfecta:</p>
+                                            <p>{t.legal_content.cookies.intro}</p>
                                             <ul className="list-disc pl-5 space-y-2">
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Sesión:</span> Para mantenerte conectado mientras trabajas en tus textos.</li>
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Preferencias:</span> Para recordar si prefieres el modo claro o el modo oscuro.</li>
-                                                <li><span className="font-bold text-slate-900 dark:text-white">Analítica:</span> Usamos medidas anónimas para saber qué funciones gustan más y seguir mejorando.</li>
-                                                <li><span className="font-bold text-slate-900 dark:text-white">No rastreo:</span> No usamos cookies de rastreo publicitario de terceros.</li>
+                                                {t.legal_content.cookies.items.map((item, i) => (
+                                                    <li key={i}><span className="font-bold text-slate-900 dark:text-white">{item.b}</span> {item.t}</li>
+                                                ))}
                                             </ul>
                                         </div>
                                     </div>
@@ -1514,8 +1660,8 @@ const App = () => {
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </div>
-        </PayPalScriptProvider>
+            </div >
+        </PayPalScriptProvider >
     );
 };
 
