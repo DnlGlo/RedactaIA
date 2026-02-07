@@ -48,6 +48,8 @@ const App = () => {
     const [generatedText, setGeneratedText] = useState('');
     const [activeLegalModal, setActiveLegalModal] = useState(null);
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showLimitModal, setShowLimitModal] = useState(false);
+    const [currentGenerationCount, setCurrentGenerationCount] = useState(0);
     const [showAdminPanel, setShowAdminPanel] = useState(false);
     const [adminData, setAdminData] = useState({
         users: [],
@@ -131,6 +133,26 @@ const App = () => {
         }
     }, [showAdminPanel]);
 
+    // Fetch generation usage
+    const fetchUsage = async () => {
+        if (!user) return;
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const { count } = await supabase
+            .from('generations')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_email', user.email)
+            .gte('created_at', startOfMonth.toISOString());
+
+        setCurrentGenerationCount(count || 0);
+    };
+
+    useEffect(() => {
+        if (user) fetchUsage();
+    }, [user]);
+
     const handleGenerate = async () => {
         if (!generatorConfig.topic) return;
 
@@ -138,7 +160,7 @@ const App = () => {
         if (!isLoggedIn) {
             setIsGenerating(true);
             setGeneratedText('Vista previa generada parcialmente. Inicia sesión para ver el resultado completo y guardar tu progreso...');
-            
+
             try {
                 const apiKey = import.meta.env.VITE_GROQ_KEY;
                 if (!apiKey) {
@@ -175,14 +197,14 @@ const App = () => {
 
                 const text = data.choices[0].message.content;
                 setGeneratedText(`🔒 VISTA PREVIA GRATUITA\n\n${text}\n\n---\n📝 Para obtener el texto completo con más detalle y guardar tus creaciones, inicia sesión gratis con Google.`);
-                
+
             } catch (error) {
                 console.error(error);
                 setGeneratedText(`Error en la vista previa. Por favor, inicia sesión para continuar.`);
             } finally {
                 setIsGenerating(false);
             }
-            
+
             setShowLoginModal(true);
             return;
         }
@@ -201,7 +223,7 @@ const App = () => {
                 .gte('created_at', startOfMonth.toISOString());
 
             if (count >= 5) {
-                alert("🛑 Límite Gratuito Alcanzado\n\nHas usado tus 5 generaciones gratis de este mes. Pásate a Premium para seguir creando sin límites.");
+                setShowLimitModal(true);
                 return;
             }
         }
@@ -259,6 +281,7 @@ const App = () => {
                     user_email: user.email,
                     content_type: generatorConfig.type
                 });
+                fetchUsage();
             }
         } catch (error) {
             console.error(error);
@@ -641,6 +664,25 @@ const App = () => {
                                                             <><Send size={18} /> <span>¡Generar ahora!</span></>
                                                         )}
                                                     </button>
+
+                                                    {/* Free Tier Usage Counter */}
+                                                    {!isPremium && isLoggedIn && (
+                                                        <div className="mt-4 px-2">
+                                                            <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+                                                                <span>Generaciones Gratuitas</span>
+                                                                <span className={currentGenerationCount >= 5 ? 'text-red-500' : 'text-primary-500'}>
+                                                                    {currentGenerationCount} / 5
+                                                                </span>
+                                                            </div>
+                                                            <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                                <motion.div
+                                                                    initial={{ width: 0 }}
+                                                                    animate={{ width: `${Math.min((currentGenerationCount / 5) * 100, 100)}%` }}
+                                                                    className={`h-full ${currentGenerationCount >= 5 ? 'bg-red-500' : 'bg-primary-500'}`}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -695,12 +737,12 @@ const App = () => {
                 {/* Pricing Section */}
                 <section id="pricing" className="py-32 bg-white dark:bg-slate-950">
                     <div className="max-w-7xl mx-auto px-4">
-                                <div className="text-center mb-12">
+                        <div className="text-center mb-12">
                             <h2 className="text-4xl md:text-5xl font-black mb-6">Planes para Cada Necesidad</h2>
                             <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium mb-8">Desde estudiantes hasta profesionales. Elige tu plan y empieza a crear contenido increíble hoy.</p>
 
                             {/* Billing Toggle */}
-                                <div className="flex items-center justify-center gap-4 mb-4">
+                            <div className="flex items-center justify-center gap-4 mb-4">
                                 <span className={`text-sm font-bold ${billingCycle === 'monthly' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>Mensual</span>
                                 <button
                                     onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'annual' : 'monthly')}
@@ -718,11 +760,11 @@ const App = () => {
 
                         <div className="grid md:grid-cols-3 gap-8">
                             {/* Básico */}
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: 0.1 }}
-                                whileHover={{ 
+                                whileHover={{
                                     y: -10,
                                     transition: { duration: 0.3 }
                                 }}
@@ -739,7 +781,7 @@ const App = () => {
                                 <h3 className="text-2xl font-black mb-2">Básico</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Perfecto para proyectos ocasionales y estudiantes.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <motion.span 
+                                    <motion.span
                                         initial={{ opacity: 0, scale: 0.5 }}
                                         whileInView={{ opacity: 1, scale: 1 }}
                                         transition={{ delay: 0.4, duration: 0.5 }}
@@ -751,14 +793,14 @@ const App = () => {
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
                                     {['50 Generaciones Mensuales', '5 Idiomas Disponibles', '6 Estilos Disponibles', 'Exportación Básica', 'Soporte por Email'].map((item, i) => (
-                                        <motion.li 
+                                        <motion.li
                                             key={i}
                                             initial={{ opacity: 0, x: -20 }}
                                             whileInView={{ opacity: 1, x: 0 }}
                                             transition={{ delay: 0.1 * i, duration: 0.4 }}
                                             className="flex items-center gap-3 text-sm font-semibold"
                                         >
-                                            <motion.div 
+                                            <motion.div
                                                 initial={{ scale: 0 }}
                                                 whileInView={{ scale: 1, rotate: 360 }}
                                                 transition={{ delay: 0.2 + i * 0.1, type: "spring" }}
@@ -770,7 +812,7 @@ const App = () => {
                                         </motion.li>
                                     ))}
                                 </ul>
-                                <                                motion.button 
+                                <                                motion.button
                                     whileHover={{ scale: 1.03, boxShadow: "0 15px 30px rgba(0,0,0,0.15)" }}
                                     whileTap={{ scale: 0.97 }}
                                     transition={{ duration: 0.1 }}
@@ -781,17 +823,17 @@ const App = () => {
                             </motion.div>
 
                             {/* Premium */}
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 30, scale: 0.9 }}
                                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                                 transition={{ duration: 0.6, delay: 0.2 }}
-                                whileHover={{ 
+                                whileHover={{
                                     scale: 1.05,
                                     transition: { duration: 0.15, ease: "easeOut" }
                                 }}
                                 className="relative bg-white dark:bg-slate-900 border-4 border-primary-600 p-10 rounded-[3rem] shadow-2xl shadow-primary-500/20 z-10 flex flex-col"
                             >
-                                <motion.div 
+                                <motion.div
                                     initial={{ x: 100, opacity: 0 }}
                                     whileInView={{ x: 0, opacity: 1 }}
                                     transition={{ delay: 0.5, duration: 0.5 }}
@@ -815,7 +857,7 @@ const App = () => {
                                 <h3 className="text-2xl font-black mb-2">Premium</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Para creadores que necesitan potencia ilimitada.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <motion.span 
+                                    <motion.span
                                         initial={{ opacity: 0, scale: 0.5 }}
                                         whileInView={{ opacity: 1, scale: 1 }}
                                         transition={{ delay: 0.6, duration: 0.5 }}
@@ -827,14 +869,14 @@ const App = () => {
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
                                     {['Generaciones ilimitadas', 'Todos los idiomas (11+)', 'Todos los estilos (10+)', 'Exportación HD', 'Soporte prioritario'].map((item, i) => (
-                                        <motion.li 
+                                        <motion.li
                                             key={i}
                                             initial={{ opacity: 0, x: -20 }}
                                             whileInView={{ opacity: 1, x: 0 }}
                                             transition={{ delay: 0.1 * i + 0.7, duration: 0.4 }}
                                             className="flex items-center gap-3 text-sm font-bold"
                                         >
-                                            <motion.div 
+                                            <motion.div
                                                 initial={{ scale: 0 }}
                                                 whileInView={{ scale: 1, rotate: 360 }}
                                                 transition={{ delay: 0.2 + i * 0.1 + 0.7, type: "spring" }}
@@ -884,11 +926,11 @@ const App = () => {
                             </motion.div>
 
                             {/* Enterprise */}
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: 0.3 }}
-                                whileHover={{ 
+                                whileHover={{
                                     y: -8,
                                     transition: { duration: 0.15, ease: "easeOut" }
                                 }}
@@ -905,7 +947,7 @@ const App = () => {
                                 <h3 className="text-2xl font-black mb-2">Empresa</h3>
                                 <p className="text-slate-500 mb-8 font-medium">Soluciones a medida para equipos corporativos.</p>
                                 <div className="flex items-baseline mb-8">
-                                    <motion.span 
+                                    <motion.span
                                         initial={{ opacity: 0, scale: 0.5 }}
                                         whileInView={{ opacity: 1, scale: 1 }}
                                         transition={{ delay: 0.9, duration: 0.5 }}
@@ -917,14 +959,14 @@ const App = () => {
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
                                     {['Cuentas múltiples (5)', 'Acceso vía API', 'Consultoría de prompts', 'Seguridad nivel bancario'].map((item, i) => (
-                                        <motion.li 
+                                        <motion.li
                                             key={i}
                                             initial={{ opacity: 0, x: -20 }}
                                             whileInView={{ opacity: 1, x: 0 }}
                                             transition={{ delay: 0.1 * i + 1, duration: 0.4 }}
                                             className="flex items-center gap-3 text-sm font-semibold"
                                         >
-                                            <motion.div 
+                                            <motion.div
                                                 initial={{ scale: 0 }}
                                                 whileInView={{ scale: 1, rotate: 360 }}
                                                 transition={{ delay: 0.2 + i * 0.1 + 1, type: "spring" }}
@@ -1333,6 +1375,69 @@ const App = () => {
                     </div>
                 </footer>
                 <Analytics />
+
+                {/* Limit Modal */}
+                <AnimatePresence>
+                    {showLimitModal && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
+                        >
+                            <motion.div
+                                initial={{ scale: 0.95, y: 20 }}
+                                animate={{ scale: 1, y: 0 }}
+                                exit={{ scale: 0.95, y: 20 }}
+                                className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 relative"
+                            >
+                                <button
+                                    onClick={() => setShowLimitModal(false)}
+                                    className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                >
+                                    <X size={20} className="text-slate-500" />
+                                </button>
+
+                                <div className="p-8 text-center">
+                                    <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <Lock size={32} className="text-red-500" />
+                                    </div>
+
+                                    <h3 className="text-2xl font-black mb-2 text-slate-900 dark:text-white">Límite Alcanzado</h3>
+                                    <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium leading-relaxed">
+                                        Has usado tus <span className="text-slate-900 dark:text-white font-bold">5 generaciones gratis</span> de este mes.
+                                        <br /><br />
+                                        Los usuarios Premium disfrutan de generaciones ilimitadas y acceso a todos los modelos avanzados.
+                                    </p>
+
+                                    <div className="space-y-3">
+                                        <button
+                                            onClick={() => {
+                                                setShowLimitModal(false);
+                                                scrollToSection('pricing');
+                                            }}
+                                            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-bold shadow-lg shadow-primary-500/30 transition-all flex items-center justify-center gap-2"
+                                        >
+                                            <Zap size={18} />
+                                            <span>Desbloquear Todo</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => setShowLimitModal(false)}
+                                            className="w-full py-3.5 rounded-xl text-slate-500 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                        >
+                                            Quizás luego
+                                        </button>
+                                    </div>
+
+                                    <p className="mt-6 text-xs text-slate-400 font-medium">
+                                        Tu contador se reiniciará el mes que viene.
+                                    </p>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </PayPalScriptProvider>
     );
