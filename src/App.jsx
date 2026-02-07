@@ -40,7 +40,72 @@ const premiumUsers = [
     'cliente-ejemplo@gmail.com'
 ];
 
+const translations = {
+    es: {
+        nav: { features: 'Características', generator: 'Generador', pricing: 'Precios', testimonials: 'Testimonios', contact: 'Contacto', start: 'Empezar' },
+        hero: { title_start: 'Genera textos', title_highlight: 'profesionales', title_end: 'con IA en segundos', subtitle: 'La herramienta de inteligencia artificial más potente para crear informes, guiones y contenidos profesionales en segundos.', cta: 'Ir al Generador', social_proof: 'usuarios confían en nosotros', powered: 'Impulsado por Llama 3.3 (Ultra Rápido)' },
+        benefits: { speed_title: 'Velocidad Increíble', speed_desc: 'Genera textos complejos en menos de 5 segundos.', quality_title: 'Calidad Premium', quality_desc: 'Resultados con coherencia humana y estilo profesional.', multi_title: 'Multilingüe', multi_desc: 'Disponible en más de 11 idiomas con precisión total.' },
+        generator: { title: 'Generador de IA', subtitle: 'Configura y crea tu texto perfecto.', logged_in: 'Sesión Activa', topic_label: 'Tema o Prompt', topic_placeholder: '¿Sobre qué quieres que escriba hoy?', lang_label: 'Idioma', type_label: 'Tipo', style_label: 'Estilo', generate_btn: '¡Generar ahora!', generating_btn: 'Generando...', free_usage: 'Generaciones Gratuitas' },
+        pricing: {
+            title: 'Planes para Cada Necesidad', subtitle: 'Desde estudiantes hasta profesionales. Elige tu plan y empieza a crear contenido increíble hoy.', monthly: 'Mensual', annual: 'Anual', save: 'Ahorra 20%', guarantee: 'Garantía de devolución de 7 días',
+            basic_title: 'Básico', basic_desc: 'Perfecto para proyectos ocasionales y estudiantes.',
+            premium_title: 'Premium', premium_desc: 'Para creadores que necesitan potencia ilimitada.', popular: 'El más popular',
+            enterprise_title: 'Empresa', enterprise_desc: 'Soluciones a medida para equipos corporativos.', enterprise_manual: 'Activación manual en menos de 2h laborables.',
+            month_unit: 'mes', year_unit: 'año', start_btn: 'Empezar Ahora',
+            basic_features: ['50 Generaciones Mensuales', '5 Idiomas Disponibles', '6 Estilos Disponibles', 'Exportación Básica', 'Soporte por Email'],
+            premium_features: ['Generaciones ilimitadas', 'Todos los idiomas (11+)', 'Todos los estilos (10+)', 'Exportación HD', 'Soporte prioritario'],
+            enterprise_features: ['Cuentas múltiples (5)', 'Acceso vía API', 'Consultoría de prompts', 'Seguridad nivel bancario']
+        },
+        testimonials: { title: 'Lo que dicen nuestros usuarios', subtitle: 'Más de 2.000 profesionales ya confían en RedactaIA para sus proyectos más importantes.' },
+        contact: { title: '¿Alguna duda o problema?', subtitle: 'Nuestro equipo está listo para ayudarte a llevar tu redacción al siguiente nivel.', name: 'Nombre', email: 'Email', message: 'Mensaje', btn: 'Enviar Mensaje' },
+        footer: { desc: 'Revolucionando la escritura creativa con inteligencia artificial de última generación. Únete a la nueva era del contenido.', legal: 'Legal', networks: 'Redes', rights: '© 2026 RedactaIA. Todos los derechos reservados. Diseñado para brillar.' },
+        limit_modal: { title: 'Límite Alcanzado', desc_1: 'Has usado tus', desc_2: '5 generaciones gratis', desc_3: 'de este mes.', premium_pitch: 'Los usuarios Premium disfrutan de generaciones ilimitadas y acceso a todos los modelos avanzados.', unlock_btn: 'Desbloquear Todo', maybe_later: 'Quizás luego', reset_note: 'Tu contador se reiniciará el mes que viene.' }
+    },
+    pt: {
+        nav: { features: 'Recursos', generator: 'Gerador', pricing: 'Preços', testimonials: 'Depoimentos', contact: 'Contato', start: 'Começar' },
+        hero: { title_start: 'Gere textos', title_highlight: 'profissionais', title_end: 'com IA em segundos', subtitle: 'A ferramenta de inteligência artificial mais poderosa para criar relatórios, roteiros e conteúdos profissionais em segundos.', cta: 'Ir para o Gerador', social_proof: 'usuários confiam em nós', powered: 'Impulsionado por Llama 3.3 (Ultra Rápido)' },
+        benefits: { speed_title: 'Velocidade Incrível', speed_desc: 'Gere textos complexos em menos de 5 segundos.', quality_title: 'Qualidade Premium', quality_desc: 'Resultados com coerência humana e estilo profissional.', multi_title: 'Multilíngue', multi_desc: 'Disponível em mais de 11 idiomas com precisão total.' },
+        generator: { title: 'Gerador de IA', subtitle: 'Configure e crie seu texto perfeito.', logged_in: 'Sessão Ativa', topic_label: 'Tema ou Prompt', topic_placeholder: 'Sobre o que você quer que eu escreva hoje?', lang_label: 'Idioma', type_label: 'Tipo', style_label: 'Estilo', generate_btn: 'Gerar agora!', generating_btn: 'Gerando...', free_usage: 'Gerações Gratuitas' },
+        pricing: {
+            title: 'Planos para Cada Necessidade', subtitle: 'De estudantes a profissionais. Escolha seu plano e comece a criar conteúdo incrível hoje.', monthly: 'Mensal', annual: 'Anual', save: 'Economize 20%', guarantee: 'Garantia de reembolso de 7 dias',
+            basic_title: 'Básico', basic_desc: 'Perfeito para projetos ocasionais e estudantes.',
+            premium_title: 'Premium', premium_desc: 'Para criadores que precisam de potência ilimitada.', popular: 'O mais popular',
+            enterprise_title: 'Empresa', enterprise_desc: 'Soluções sob medida para equipes corporativas.', enterprise_manual: 'Ativação manual em menos de 2h úteis.',
+            month_unit: 'mês', year_unit: 'ano', start_btn: 'Começar Agora',
+            basic_features: ['50 Gerações Mensais', '5 Idiomas Disponíveis', '6 Estilos Disponíveis', 'Exportação Básica', 'Suporte por Email'],
+            premium_features: ['Gerações Ilimitadas', 'Todos os idiomas (11+)', 'Todos os estilos (10+)', 'Exportação HD', 'Suporte Prioritário'],
+            enterprise_features: ['Múltiplas contas (5)', 'Acesso via API', 'Consultoria de prompts', 'Segurança nível bancário']
+        },
+        testimonials: { title: 'O que dizem nossos usuários', subtitle: 'Mais de 2.000 profissionais já confiam na RedactaIA para seus projetos mais importantes.' },
+        contact: { title: 'Alguma dúvida ou problema?', subtitle: 'Nossa equipe está pronta para ajudar você a levar sua redação para o próximo nível.', name: 'Nome', email: 'Email', message: 'Mensagem', btn: 'Enviar Mensagem' },
+        footer: { desc: 'Revolucionando a escrita criativa com inteligência artificial de última geração. Junte-se à nova era do conteúdo.', legal: 'Legal', networks: 'Redes', rights: '© 2026 RedactaIA. Todos os direitos reservados. Projetado para brilhar.' },
+        limit_modal: { title: 'Limite Alcançado', desc_1: 'Você usou suas', desc_2: '5 gerações gratuitas', desc_3: 'neste mês.', premium_pitch: 'Usuários Premium desfrutam de gerações ilimitadas e acesso a todos os modelos avançados.', unlock_btn: 'Desbloquear Tudo', maybe_later: 'Talvez depois', reset_note: 'Seu contador será reiniciado no próximo mês.' }
+    },
+    en: {
+        nav: { features: 'Features', generator: 'Generator', pricing: 'Pricing', testimonials: 'Testimonials', contact: 'Contact', start: 'Start' },
+        hero: { title_start: 'Generate', title_highlight: 'professional', title_end: 'AI texts in seconds', subtitle: 'The most powerful AI tool to create reports, scripts, and professional content in seconds.', cta: 'Go to Generator', social_proof: 'users trust us', powered: 'Powered by Llama 3.3 (Ultra Fast)' },
+        benefits: { speed_title: 'Incredible Speed', speed_desc: 'Generate complex texts in less than 5 seconds.', quality_title: 'Premium Quality', quality_desc: 'Results with human coherence and professional style.', multi_title: 'Multilingual', multi_desc: 'Available in over 11 languages with total precision.' },
+        generator: { title: 'AI Generator', subtitle: 'Configure and create your perfect text.', logged_in: 'Active Session', topic_label: 'Topic or Prompt', topic_placeholder: 'What do you want me to write about today?', lang_label: 'Language', type_label: 'Type', style_label: 'Style', generate_btn: 'Generate Now!', generating_btn: 'Generating...', free_usage: 'Free Generations' },
+        pricing: {
+            title: 'Plans for Every Need', subtitle: 'From students to professionals. Choose your plan and start creating amazing content today.', monthly: 'Monthly', annual: 'Annual', save: 'Save 20%', guarantee: '7-day money-back guarantee',
+            basic_title: 'Basic', basic_desc: 'Perfect for occasional projects and students.',
+            premium_title: 'Premium', premium_desc: 'For creators who need unlimited power.', popular: 'Most Popular',
+            enterprise_title: 'Enterprise', enterprise_desc: 'Tailored solutions for corporate teams.', enterprise_manual: 'Manual activation in less than 2 business hours.',
+            month_unit: 'mo', year_unit: 'yr', start_btn: 'Start Now',
+            basic_features: ['50 Monthly Generations', '5 Languages Available', '6 Styles Available', 'Basic Export', 'Email Support'],
+            premium_features: ['Unlimited Generations', 'All languages (11+)', 'All styles (10+)', 'HD Export', 'Priority Support'],
+            enterprise_features: ['Multiple accounts (5)', 'API Access', 'Prompt Consulting', 'Bank-level Security']
+        },
+        testimonials: { title: 'What our users say', subtitle: 'More than 2,000 professionals already trust RedactaIA for their most important projects.' },
+        contact: { title: 'Any questions or issues?', subtitle: 'Our team is ready to help you take your writing to the next level.', name: 'Name', email: 'Email', message: 'Message', btn: 'Send Message' },
+        footer: { desc: 'Revolutionizing creative writing with state-of-the-art artificial intelligence. Join the new era of content.', legal: 'Legal', networks: 'Networks', rights: '© 2026 RedactaIA. All rights reserved. Designed to shine.' },
+        limit_modal: { title: 'Limit Reached', desc_1: 'You have used your', desc_2: '5 free generations', desc_3: 'this month.', premium_pitch: 'Premium users enjoy unlimited generations and access to all advanced models.', unlock_btn: 'Unlock All', maybe_later: 'Maybe later', reset_note: 'Your counter will reset next month.' }
+    }
+};
+
 const App = () => {
+    const [lang, setLang] = useState('es');
+    const t = translations[lang];
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
@@ -299,11 +364,11 @@ const App = () => {
     };
 
     const navLinks = [
-        { name: 'Características', id: 'features' },
-        { name: 'Generador', id: 'generator' },
-        { name: 'Precios', id: 'pricing' },
-        { name: 'Testimonios', id: 'testimonials' },
-        { name: 'Contacto', id: 'contact' },
+        { name: t.nav.features, id: 'features' },
+        { name: t.nav.generator, id: 'generator' },
+        { name: t.nav.pricing, id: 'pricing' },
+        { name: t.nav.testimonials, id: 'testimonials' },
+        { name: t.nav.contact, id: 'contact' },
     ];
 
     const languages = ['Español', 'English', 'Français', 'Deutsch', 'Italiano', 'Português', 'Nederlands', 'Русский', '中文', '日本語', 'العربية'];
@@ -368,6 +433,18 @@ const App = () => {
                                 >
                                     {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                                 </button>
+                                <div className="relative">
+                                    <select
+                                        value={lang}
+                                        onChange={(e) => setLang(e.target.value)}
+                                        className="appearance-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-sm py-2.5 pl-4 pr-8 rounded-full cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors outline-none focus:ring-2 focus:ring-primary-500"
+                                    >
+                                        <option value="es">🇪🇸 ES</option>
+                                        <option value="pt">🇧🇷 PT</option>
+                                        <option value="en">🇺🇸 EN</option>
+                                    </select>
+                                    <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                                </div>
                                 {isLoggedIn ? (
                                     <div className="flex items-center space-x-3 bg-slate-100 dark:bg-slate-800 p-1 pr-3 rounded-full border border-slate-200 dark:border-slate-700">
                                         <div className="text-right hidden sm:block pl-2">
@@ -395,7 +472,7 @@ const App = () => {
                                         onClick={() => handleGoogleLogin()}
                                         className="hidden sm:block bg-slate-900 dark:bg-white text-white dark:text-slate-950 px-6 py-2.5 rounded-full font-bold text-sm shadow-xl shadow-slate-900/10 dark:shadow-white/5 hover:scale-105 active:scale-95 transition-all"
                                     >
-                                        Empezar
+                                        {t.nav.start}
                                     </button>
                                 )}
                             </div>
@@ -414,15 +491,14 @@ const App = () => {
                         >
                             <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-xs font-black uppercase tracking-widest mb-8">
                                 <Sparkles size={14} className="text-amber-500" />
-                                <span>Impulsado por Llama 3.3 (Ultra Rápido)</span>
+                                <span>{t.hero.powered}</span>
                             </div>
                             <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-[0.9]">
-                                Genera textos <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-600">profesionales</span> con IA en <br />
-                                segundos
+                                {t.hero.title_start} <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-600">{t.hero.title_highlight}</span> {t.hero.title_end}
                             </h1>
                             <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
-                                La herramienta de inteligencia artificial más potente para crear informes, guiones y contenidos profesionales en segundos.
+                                {t.hero.subtitle}
                             </p>
 
                             <div className="flex flex-col items-center gap-6">
@@ -430,7 +506,7 @@ const App = () => {
                                     onClick={() => scrollToSection('generator')}
                                     className="group bg-primary-600 hover:bg-primary-700 text-white px-10 py-5 rounded-3xl text-xl font-black shadow-2xl shadow-primary-600/30 flex items-center space-x-3 transition-all active:scale-95"
                                 >
-                                    <span>Ir al Generador</span>
+                                    <span>{t.hero.cta}</span>
                                     <ArrowDown className="group-hover:translate-y-1 transition-transform" />
                                 </button>
 
@@ -438,7 +514,7 @@ const App = () => {
                                     {[1, 2, 3, 4].map(i => (
                                         <img key={i} className="w-10 h-10 rounded-full border-4 border-white dark:border-slate-950 bg-slate-200" src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`} alt="avatar" />
                                     ))}
-                                    <div className="pl-4 text-sm font-bold text-slate-400">+2.000 usuarios confían en nosotros</div>
+                                    <div className="pl-4 text-sm font-bold text-slate-400">+2.000 {t.hero.social_proof}</div>
                                 </div>
                             </div>
                         </motion.div>
@@ -448,9 +524,9 @@ const App = () => {
                     <div className="max-w-6xl mx-auto px-4 mt-32">
                         <div className="grid md:grid-cols-3 gap-8">
                             {[
-                                { title: 'Velocidad Increíble', desc: 'Genera textos complejos en menos de 5 segundos.', icon: <Zap className="text-amber-500" /> },
-                                { title: 'Calidad Premium', desc: 'Resultados con coherencia humana y estilo profesional.', icon: <ShieldCheck className="text-emerald-500" /> },
-                                { title: 'Multilingüe', desc: 'Disponible en más de 11 idiomas con precisión total.', icon: <Languages className="text-blue-500" /> }
+                                { title: t.benefits.speed_title, desc: t.benefits.speed_desc, icon: <Zap className="text-amber-500" /> },
+                                { title: t.benefits.quality_title, desc: t.benefits.quality_desc, icon: <ShieldCheck className="text-emerald-500" /> },
+                                { title: t.benefits.multi_title, desc: t.benefits.multi_desc, icon: <Languages className="text-blue-500" /> }
                             ].map((item, i) => (
                                 <motion.div
                                     key={i}
@@ -504,9 +580,9 @@ const App = () => {
                                     <div>
                                         <h2 className="text-3xl font-black mb-2 flex items-center gap-3">
                                             <Zap className="text-primary-600" />
-                                            Generador de IA
+                                            {t.generator.title}
                                         </h2>
-                                        <p className="text-slate-500 font-medium">Configura y crea tu texto perfecto.</p>
+                                        <p className="text-slate-500 font-medium">{t.generator.subtitle}</p>
                                     </div>
                                     {isLoggedIn && (
                                         <div className="bg-emerald-500/10 text-emerald-500 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
@@ -575,11 +651,11 @@ const App = () => {
                                                 <div className="space-y-6">
                                                     <div>
                                                         <label className="block text-xs font-black mb-3 text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                                            <MessageSquare size={14} className="text-primary-500" /> Tema o Prompt
+                                                            <MessageSquare size={14} className="text-primary-500" /> {t.generator.topic_label}
                                                         </label>
                                                         <textarea
                                                             className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none h-40 focus:border-primary-500 transition-all font-bold"
-                                                            placeholder="¿Sobre qué quieres que escriba hoy?"
+                                                            placeholder={t.generator.topic_placeholder}
                                                             value={generatorConfig.topic}
                                                             onChange={(e) => setGeneratorConfig({ ...generatorConfig, topic: e.target.value })}
                                                         />
@@ -588,7 +664,7 @@ const App = () => {
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div>
                                                             <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                                                <Globe size={12} /> Idioma
+                                                                <Globe size={12} /> {t.generator.lang_label}
                                                             </label>
                                                             <select
                                                                 className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm"
@@ -614,7 +690,7 @@ const App = () => {
                                                         </div>
                                                         <div>
                                                             <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                                                <FileText size={12} /> Tipo
+                                                                <FileText size={12} /> {t.generator.type_label}
                                                             </label>
                                                             <select
                                                                 className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm"
@@ -628,7 +704,7 @@ const App = () => {
 
                                                     <div>
                                                         <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                                            <Palette size={12} /> Estilo
+                                                            <Palette size={12} /> {t.generator.style_label}
                                                         </label>
                                                         <select
                                                             className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm"
@@ -659,9 +735,9 @@ const App = () => {
                                                         className="w-full py-4 bg-gradient-to-r from-primary-600 to-indigo-600 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 shadow-lg shadow-primary-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 mt-4"
                                                     >
                                                         {isGenerating ? (
-                                                            <><div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div> <span>Generando...</span></>
+                                                            <><div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div> <span>{t.generator.generating_btn}</span></>
                                                         ) : (
-                                                            <><Send size={18} /> <span>¡Generar ahora!</span></>
+                                                            <><Send size={18} /> <span>{t.generator.generate_btn}</span></>
                                                         )}
                                                     </button>
 
@@ -669,7 +745,7 @@ const App = () => {
                                                     {!isPremium && isLoggedIn && (
                                                         <div className="mt-4 px-2">
                                                             <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                                                                <span>Generaciones Gratuitas</span>
+                                                                <span>{t.generator.free_usage}</span>
                                                                 <span className={currentGenerationCount >= 5 ? 'text-red-500' : 'text-primary-500'}>
                                                                     {currentGenerationCount} / 5
                                                                 </span>
@@ -738,23 +814,23 @@ const App = () => {
                 <section id="pricing" className="py-32 bg-white dark:bg-slate-950">
                     <div className="max-w-7xl mx-auto px-4">
                         <div className="text-center mb-12">
-                            <h2 className="text-4xl md:text-5xl font-black mb-6">Planes para Cada Necesidad</h2>
-                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium mb-8">Desde estudiantes hasta profesionales. Elige tu plan y empieza a crear contenido increíble hoy.</p>
+                            <h2 className="text-4xl md:text-5xl font-black mb-6">{t.pricing.title}</h2>
+                            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium mb-8">{t.pricing.subtitle}</p>
 
                             {/* Billing Toggle */}
                             <div className="flex items-center justify-center gap-4 mb-4">
-                                <span className={`text-sm font-bold ${billingCycle === 'monthly' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>Mensual</span>
+                                <span className={`text-sm font-bold ${billingCycle === 'monthly' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{t.pricing.monthly}</span>
                                 <button
                                     onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'annual' : 'monthly')}
                                     className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 ${billingCycle === 'annual' ? 'bg-primary-600' : 'bg-slate-300 dark:bg-slate-700'}`}
                                 >
                                     <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${billingCycle === 'annual' ? 'translate-x-6' : ''}`}></div>
                                 </button>
-                                <span className={`text-sm font-bold ${billingCycle === 'annual' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>Anual <span className="text-emerald-500 text-xs">(Ahorra 20%)</span></span>
+                                <span className={`text-sm font-bold ${billingCycle === 'annual' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{t.pricing.annual} <span className="text-emerald-500 text-xs">({t.pricing.save})</span></span>
                             </div>
 
                             <div className="flex items-center justify-center gap-2 text-amber-500 font-bold text-xs uppercase tracking-widest bg-amber-500/10 py-2 px-4 rounded-full inline-block mx-auto">
-                                <ShieldCheck size={14} /> Garantía de devolución de 7 días
+                                <ShieldCheck size={14} /> {t.pricing.guarantee}
                             </div>
                         </div>
 
@@ -778,8 +854,8 @@ const App = () => {
                                 >
                                     <Pen className="text-slate-600 dark:text-slate-400" size={24} />
                                 </motion.div>
-                                <h3 className="text-2xl font-black mb-2">Básico</h3>
-                                <p className="text-slate-500 mb-8 font-medium">Perfecto para proyectos ocasionales y estudiantes.</p>
+                                <h3 className="text-2xl font-black mb-2">{t.pricing.basic_title}</h3>
+                                <p className="text-slate-500 mb-8 font-medium">{t.pricing.basic_desc}</p>
                                 <div className="flex items-baseline mb-8">
                                     <motion.span
                                         initial={{ opacity: 0, scale: 0.5 }}
@@ -789,10 +865,10 @@ const App = () => {
                                     >
                                         {billingCycle === 'monthly' ? '9,99€' : '99€'}
                                     </motion.span>
-                                    <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
+                                    <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? t.pricing.month_unit : t.pricing.year_unit}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
-                                    {['50 Generaciones Mensuales', '5 Idiomas Disponibles', '6 Estilos Disponibles', 'Exportación Básica', 'Soporte por Email'].map((item, i) => (
+                                    {t.pricing.basic_features.map((item, i) => (
                                         <motion.li
                                             key={i}
                                             initial={{ opacity: 0, x: -20 }}
@@ -812,13 +888,13 @@ const App = () => {
                                         </motion.li>
                                     ))}
                                 </ul>
-                                <                                motion.button
+                                <motion.button
                                     whileHover={{ scale: 1.03, boxShadow: "0 15px 30px rgba(0,0,0,0.15)" }}
                                     whileTap={{ scale: 0.97 }}
                                     transition={{ duration: 0.1 }}
                                     className="w-full py-4 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black transition-all shadow-xl"
                                 >
-                                    Empezar Ahora
+                                    {t.pricing.start_btn}
                                 </motion.button>
                             </motion.div>
 
@@ -843,7 +919,7 @@ const App = () => {
                                         animate={{ scale: [1, 1.1, 1] }}
                                         transition={{ duration: 2, repeat: Infinity }}
                                     >
-                                        El más popular
+                                        {t.pricing.popular}
                                     </motion.span>
                                 </motion.div>
                                 <motion.div
@@ -854,8 +930,8 @@ const App = () => {
                                 >
                                     <Sparkles className="text-white" size={24} />
                                 </motion.div>
-                                <h3 className="text-2xl font-black mb-2">Premium</h3>
-                                <p className="text-slate-500 mb-8 font-medium">Para creadores que necesitan potencia ilimitada.</p>
+                                <h3 className="text-2xl font-black mb-2">{t.pricing.premium_title}</h3>
+                                <p className="text-slate-500 mb-8 font-medium">{t.pricing.premium_desc}</p>
                                 <div className="flex items-baseline mb-8">
                                     <motion.span
                                         initial={{ opacity: 0, scale: 0.5 }}
@@ -865,10 +941,10 @@ const App = () => {
                                     >
                                         {billingCycle === 'monthly' ? '19,99€' : '199€'}
                                     </motion.span>
-                                    <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
+                                    <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? t.pricing.month_unit : t.pricing.year_unit}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
-                                    {['Generaciones ilimitadas', 'Todos los idiomas (11+)', 'Todos los estilos (10+)', 'Exportación HD', 'Soporte prioritario'].map((item, i) => (
+                                    {t.pricing.premium_features.map((item, i) => (
                                         <motion.li
                                             key={i}
                                             initial={{ opacity: 0, x: -20 }}
@@ -944,8 +1020,8 @@ const App = () => {
                                 >
                                     <ShieldCheck className="text-slate-600 dark:text-slate-400" size={24} />
                                 </motion.div>
-                                <h3 className="text-2xl font-black mb-2">Empresa</h3>
-                                <p className="text-slate-500 mb-8 font-medium">Soluciones a medida para equipos corporativos.</p>
+                                <h3 className="text-2xl font-black mb-2">{t.pricing.enterprise_title}</h3>
+                                <p className="text-slate-500 mb-8 font-medium">{t.pricing.enterprise_desc}</p>
                                 <div className="flex items-baseline mb-8">
                                     <motion.span
                                         initial={{ opacity: 0, scale: 0.5 }}
@@ -955,10 +1031,10 @@ const App = () => {
                                     >
                                         {billingCycle === 'monthly' ? '59,99€' : '599€'}
                                     </motion.span>
-                                    <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
+                                    <span className="text-slate-400 ml-2 font-bold">/{billingCycle === 'monthly' ? t.pricing.month_unit : t.pricing.year_unit}</span>
                                 </div>
                                 <ul className="space-y-4 mb-10 flex-grow">
-                                    {['Cuentas múltiples (5)', 'Acceso vía API', 'Consultoría de prompts', 'Seguridad nivel bancario'].map((item, i) => (
+                                    {t.pricing.enterprise_features.map((item, i) => (
                                         <motion.li
                                             key={i}
                                             initial={{ opacity: 0, x: -20 }}
@@ -1022,8 +1098,8 @@ const App = () => {
                 <section id="testimonials" className="py-32 bg-gradient-to-br from-primary-50 to-indigo-50 dark:from-slate-900/40 dark:to-indigo-950/20">
                     <div className="max-w-7xl mx-auto px-4">
                         <div className="text-center mb-20">
-                            <h2 className="text-4xl md:text-5xl font-black mb-6">Lo que dicen nuestros usuarios</h2>
-                            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">Más de 2.000 profesionales ya confían en RedactaIA para sus proyectos más importantes.</p>
+                            <h2 className="text-4xl md:text-5xl font-black mb-6">{t.testimonials.title}</h2>
+                            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">{t.testimonials.subtitle}</p>
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-8 mb-16">
@@ -1097,8 +1173,8 @@ const App = () => {
                 <section id="contact" className="py-32 px-4 relative overflow-hidden">
                     <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary-500/10 blur-[120px] rounded-full -z-10"></div>
                     <div className="max-w-4xl mx-auto bg-slate-900 dark:bg-slate-800 rounded-[3rem] p-12 text-white text-center shadow-2xl">
-                        <h2 className="text-4xl font-black mb-6">¿Alguna duda o problema?</h2>
-                        <p className="text-slate-400 mb-12 max-w-lg mx-auto font-medium">Nuestro equipo está listo para ayudarte a llevar tu redacción al siguiente nivel.</p>
+                        <h2 className="text-4xl font-black mb-6">{t.contact.title}</h2>
+                        <p className="text-slate-400 mb-12 max-w-lg mx-auto font-medium">{t.contact.subtitle}</p>
 
                         <form
                             className="grid md:grid-cols-2 gap-6 text-left"
@@ -1123,19 +1199,19 @@ const App = () => {
                             }}
                         >
                             <div className="space-y-2">
-                                <label className="text-xs font-black uppercase tracking-widest text-slate-400">Nombre</label>
+                                <label className="text-xs font-black uppercase tracking-widest text-slate-400">{t.contact.name}</label>
                                 <input required className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder="Tu nombre" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-black uppercase tracking-widest text-slate-400">Email</label>
+                                <label className="text-xs font-black uppercase tracking-widest text-slate-400">{t.contact.email}</label>
                                 <input required type="email" className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500" placeholder="correo@ejemplo.com" />
                             </div>
                             <div className="md:col-span-2 space-y-2">
-                                <label className="text-xs font-black uppercase tracking-widest text-slate-400">Mensaje</label>
+                                <label className="text-xs font-black uppercase tracking-widest text-slate-400">{t.contact.message}</label>
                                 <textarea required className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary-500 h-32 resize-none" placeholder="¿En qué podemos ayudarte?"></textarea>
                             </div>
                             <button type="submit" className="md:col-span-2 py-5 bg-primary-600 rounded-2xl font-black hover:bg-primary-500 transition-all shadow-xl shadow-primary-600/20">
-                                Enviar Mensaje
+                                {t.contact.btn}
                             </button>
                         </form>
                     </div>
@@ -1349,11 +1425,11 @@ const App = () => {
                                     <span className="text-2xl font-black tracking-tighter">RedactaIA</span>
                                 </div>
                                 <p className="text-slate-500 dark:text-slate-400 max-w-sm font-medium leading-relaxed">
-                                    Revolucionando la escritura creativa con inteligencia artificial de última generación. Únete a la nueva era del contenido.
+                                    {t.footer.desc}
                                 </p>
                             </div>
                             <div>
-                                <h4 className="font-black mb-8 uppercase tracking-widest text-xs opacity-50">Legal</h4>
+                                <h4 className="font-black mb-8 uppercase tracking-widest text-xs opacity-50">{t.footer.legal}</h4>
                                 <ul className="space-y-4 text-sm font-bold text-slate-500">
                                     <li><button onClick={() => setActiveLegalModal('privacy')} className="hover:text-primary-600">Privacidad</button></li>
                                     <li><button onClick={() => setActiveLegalModal('terms')} className="hover:text-primary-600">Términos</button></li>
@@ -1361,7 +1437,7 @@ const App = () => {
                                 </ul>
                             </div>
                             <div>
-                                <h4 className="font-black mb-8 uppercase tracking-widest text-xs opacity-50">Redes</h4>
+                                <h4 className="font-black mb-8 uppercase tracking-widest text-xs opacity-50">{t.footer.networks}</h4>
                                 <ul className="space-y-4 text-sm font-bold text-slate-500">
                                     <li><a href="https://www.tiktok.com/@redactaia" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600">TikTok</a></li>
                                     <li><a href="mailto:contacto@redactaia.com" className="hover:text-primary-600">Gmail</a></li>
@@ -1370,7 +1446,7 @@ const App = () => {
                             </div>
                         </div>
                         <div className="text-center text-slate-400 text-xs font-bold border-t border-slate-100 dark:border-slate-900 pt-10">
-                            © 2026 RedactaIA. Todos los derechos reservados. Diseñado para brillar.
+                            {t.footer.rights}
                         </div>
                     </div>
                 </footer>
@@ -1403,11 +1479,11 @@ const App = () => {
                                         <Lock size={32} className="text-red-500" />
                                     </div>
 
-                                    <h3 className="text-2xl font-black mb-2 text-slate-900 dark:text-white">Límite Alcanzado</h3>
+                                    <h3 className="text-2xl font-black mb-2 text-slate-900 dark:text-white">{t.limit_modal.title}</h3>
                                     <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium leading-relaxed">
-                                        Has usado tus <span className="text-slate-900 dark:text-white font-bold">5 generaciones gratis</span> de este mes.
+                                        {t.limit_modal.desc_1} <span className="text-slate-900 dark:text-white font-bold">{t.limit_modal.desc_2}</span> {t.limit_modal.desc_3}
                                         <br /><br />
-                                        Los usuarios Premium disfrutan de generaciones ilimitadas y acceso a todos los modelos avanzados.
+                                        {t.limit_modal.premium_pitch}
                                     </p>
 
                                     <div className="space-y-3">
@@ -1419,19 +1495,19 @@ const App = () => {
                                             className="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-bold shadow-lg shadow-primary-500/30 transition-all flex items-center justify-center gap-2"
                                         >
                                             <Zap size={18} />
-                                            <span>Desbloquear Todo</span>
+                                            <span>{t.limit_modal.unlock_btn}</span>
                                         </button>
 
                                         <button
                                             onClick={() => setShowLimitModal(false)}
                                             className="w-full py-3.5 rounded-xl text-slate-500 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                                         >
-                                            Quizás luego
+                                            {t.limit_modal.maybe_later}
                                         </button>
                                     </div>
 
                                     <p className="mt-6 text-xs text-slate-400 font-medium">
-                                        Tu contador se reiniciará el mes que viene.
+                                        {t.limit_modal.reset_note}
                                     </p>
                                 </div>
                             </motion.div>
