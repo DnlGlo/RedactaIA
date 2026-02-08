@@ -73,12 +73,26 @@ const translations = {
             title: '¡Ya tienes una vista previa!',
             subtitle: 'Hemos generado una vista previa de tu contenido. Para obtener el texto completo, guardar tus creaciones y seguir generando sin límites, inicia sesión gratis.',
             f1: '5 generaciones gratis al mes', f2: 'Guarda tus textos favoritos', f3: 'Acceso a historial',
-            google_btn: '{t.login_modal.google_btn}'
+            google_btn: 'ENTRAR CON GOOGLE'
         },
         alerts: {
             premium_only: '🔒 Esta opción es solo para usuarios Premium. ¡Suscríbete para desbloquear todo el potencial!',
             contact_success: '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.',
             contact_error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
+        },
+        testimonials_list: [
+            { name: "María García", role: "Content Manager", company: "Agencia Digital", text: "RedactaIA ha reducido nuestro tiempo de creación de contenido en un 70%. Ahora podemos producir 10 veces más.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria" },
+            { name: "Carlos Rodríguez", role: "Estudiante", company: "Universidad", text: "Como estudiante, me ayuda a organizar mis ideas y crear ensayos bien estructurados. ¡Mis notas han mejorado!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos" },
+            { name: "Ana Martínez", role: "Freelance Writer", company: "Independiente", text: "Puedo aceptar más proyectos gracias a RedactaIA. La calidad es excelente y mis clientes están encantados.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana" }
+        ],
+        generator_status: {
+            loading: 'Generando contenido ultra rápido con Groq...',
+            preview: 'Vista previa generada parcialmente. Inicia sesión para ver el resultado completo...',
+        },
+        options: {
+            languages: ['Español', 'Inglés', 'Francés', 'Alemán', 'Italiano', 'Português', 'Holandés', 'Ruso', 'Chino', 'Japonés', 'Árabe'],
+            types: ['Redacción', 'Informe', 'Guion', 'Email', 'Redes Sociales', 'Blog Post', 'Newsletter', 'Resumen Ejecutivo', 'Carta Formal', 'Poema', 'Diálogo'],
+            styles: ['Formal', 'Informal', 'Humorístico', 'Profesional', 'Optimista', 'Persuasivo', 'Técnico', 'Narrativo', 'Descriptivo', 'Inspiracional']
         },
         legal_content: {
             privacy: {
@@ -152,6 +166,20 @@ const translations = {
             contact_success: 'Mensagem enviada com sucesso! Entraremos em contato em breve.',
             contact_error: 'Erro ao enviar a mensagem. Tente novamente.'
         },
+        testimonials_list: [
+            { name: "Maria Garcia", role: "Gerente de Conteúdo", company: "Agência Digital", text: "O RedactaIA reduziu nosso tempo de criação de conteúdo em 70%. Agora podemos produzir 10 vezes mais.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria" },
+            { name: "Carlos Rodriguez", role: "Estudante", company: "Universidade", text: "Como estudante, ele me ajuda a organizar minhas ideias e criar redações estruturadas. Minhas notas melhoraram!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos" },
+            { name: "Ana Martinez", role: "Escritora Freelancer", company: "Independente", text: "Posso aceitar mais projetos graças ao RedactaIA. A qualidade é excelente e meus clientes estão encantados.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana" }
+        ],
+        generator_status: {
+            loading: 'Gerando conteúdo ultra rápido com Groq...',
+            preview: 'Prévia gerada parcialmente. Faça login para ver o resultado completo...',
+        },
+        options: {
+            languages: ['Espanhol', 'Inglês', 'Francês', 'Alemão', 'Italiano', 'Português', 'Holandês', 'Russo', 'Chinês', 'Japonês', 'Árabe'],
+            types: ['Redação', 'Relatório', 'Roteiro', 'Email', 'Redes Sociais', 'Blog Post', 'Newsletter', 'Resumo Executivo', 'Carta Formal', 'Poema', 'Diálogo'],
+            styles: ['Formal', 'Informal', 'Humorístico', 'Profissional', 'Otimista', 'Persuasivo', 'Técnico', 'Narrativo', 'Descritivo', 'Inspiracional']
+        },
         legal_content: {
             privacy: {
                 title: 'Política de Privacidade',
@@ -223,6 +251,20 @@ const translations = {
             premium_only: '🔒 This option is for Premium users only. Subscribe to unlock full potential!',
             contact_success: 'Message sent successfully! We will get in touch with you soon.',
             contact_error: 'Error sending message. Please try again.'
+        },
+        testimonials_list: [
+            { name: "Maria Garcia", role: "Content Manager", company: "Digital Agency", text: "RedactaIA has reduced our content creation time by 70%. Now we can produce 10 times more.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria" },
+            { name: "Carlos Rodriguez", role: "Student", company: "University", text: "As a student, it helps me organize my ideas and create well-structured essays. My grades improved!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos" },
+            { name: "Ana Martinez", role: "Freelance Writer", company: "Independent", text: "I can take on more projects thanks to RedactaIA. The quality is excellent and my clients are delighted.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana" }
+        ],
+        generator_status: {
+            loading: 'Generating content ultra fast with Groq...',
+            preview: 'Preview generated partially. Log in to see the full result...',
+        },
+        options: {
+            languages: ['Spanish', 'English', 'French', 'German', 'Italian', 'Portuguese', 'Dutch', 'Russian', 'Chinese', 'Japanese', 'Arabic'],
+            types: ['Writing', 'Report', 'Script', 'Email', 'Social Media', 'Blog Post', 'Newsletter', 'Executive Summary', 'Formal Letter', 'Poem', 'Dialogue'],
+            styles: ['Formal', 'Informal', 'Humorous', 'Professional', 'Optimistic', 'Persuasive', 'Technical', 'Narrative', 'Descriptive', 'Inspirational']
         },
         legal_content: {
             privacy: {
@@ -380,22 +422,22 @@ const App = () => {
         // ESTRATEGIA: Permitir vista previa gratuita, pero login para guardar o generar completo
         if (!isLoggedIn) {
             setIsGenerating(true);
-            setGeneratedText('Vista previa generada parcialmente. Inicia sesión para ver el resultado completo y guardar tu progreso...');
+            setGeneratedText(t.generator_status.preview);
 
             try {
                 const apiKey = import.meta.env.VITE_GROQ_KEY;
                 if (!apiKey) {
-                    throw new Error("La clave de Groq no está configurada.");
+                    throw new Error("API Key missing");
                 }
 
-                const previewPrompt = `Actúa como un profesional experto en redacción.
-                Idioma: ${generatorConfig.language}
-                Tipo de texto: ${generatorConfig.type}
-                Estilo: ${generatorConfig.style}
-                Tema: ${generatorConfig.topic}
+                const previewPrompt = `Professional writer role.
+                Language: ${generatorConfig.language}
+                Type: ${generatorConfig.type}
+                Style: ${generatorConfig.style}
+                Topic: ${generatorConfig.topic}
 
-                GENERA UNA VISTA PREVIA BREVE (2-3 párrafos) del texto completo.
-                El contenido debe estar en ${generatorConfig.language.toUpperCase()}.`;
+                GENERATE A BRIEF PREVIEW (2-3 paragraphs).
+                Output MUST be in ${generatorConfig.language.toUpperCase()}.`;
 
                 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
@@ -417,11 +459,11 @@ const App = () => {
                 if (!response.ok) throw new Error(data.error?.message || "Error en la API de Groq");
 
                 const text = data.choices[0].message.content;
-                setGeneratedText(`🔒 VISTA PREVIA GRATUITA\n\n${text}\n\n---\n📝 Para obtener el texto completo con más detalle y guardar tus creaciones, inicia sesión gratis con Google.`);
+                setGeneratedText(text);
 
             } catch (error) {
                 console.error(error);
-                setGeneratedText(`Error en la vista previa. Por favor, inicia sesión para continuar.`);
+                setGeneratedText(t.alerts.contact_error);
             } finally {
                 setIsGenerating(false);
             }
@@ -450,13 +492,13 @@ const App = () => {
         }
 
         setIsGenerating(true);
-        setGeneratedText('Generando contenido ultra rápido con Groq...');
+        setGeneratedText(t.generator_status.loading);
 
         try {
             const apiKey = import.meta.env.VITE_GROQ_KEY;
 
             if (!apiKey) {
-                throw new Error("La clave de Groq no está configurada.");
+                throw new Error("API Key missing");
             }
 
             const prompt = `Actúa como un profesional experto en redacción.
@@ -527,9 +569,9 @@ const App = () => {
         { name: t.nav.contact, id: 'contact' },
     ];
 
-    const languages = ['Español', 'English', 'Français', 'Deutsch', 'Italiano', 'Português', 'Nederlands', 'Русский', '中文', '日本語', 'العربية'];
-    const textTypes = ['Redacción', 'Informe', 'Guion', 'Email', 'Redes Sociales', 'Blog Post', 'Newsletter', 'Resumen Ejecutivo', 'Carta Formal', 'Poema', 'Diálogo'];
-    const styles = ['Formal', 'Informal', 'Humorístico', 'Profesional', 'Optimista', 'Persuasivo', 'Técnico', 'Narrativo', 'Descriptivo', 'Inspiracional'];
+    const languages = t.options.languages;
+    const textTypes = t.options.types;
+    const styles = t.options.styles;
 
     // Free Tier Restrictions
     const freeLanguages = ['Español', 'English'];
@@ -1252,29 +1294,7 @@ const App = () => {
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-8 mb-16">
-                            {[
-                                {
-                                    name: "María García",
-                                    role: "Content Manager",
-                                    company: "Marketing Digital Agency",
-                                    text: "RedactaIA ha reducido nuestro tiempo de creación de contenido en un 70%. Ahora podemos producir 10 veces más contenido de alta calidad.",
-                                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria"
-                                },
-                                {
-                                    name: "Carlos Rodríguez",
-                                    role: "Estudiante Universitario",
-                                    company: "Universidad Complutense",
-                                    text: "Como estudiante, me ayuda a organizar mis ideas y crear ensayos bien estructurados. ¡Mis notas han mejorado mucho!",
-                                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos"
-                                },
-                                {
-                                    name: "Ana Martínez",
-                                    role: "Freelance Writer",
-                                    company: "Independiente",
-                                    text: "Puedo aceptar más proyectos gracias a RedactaIA. La calidad del contenido es excelente y mis clientes están encantados.",
-                                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana"
-                                }
-                            ].map((testimonial, i) => (
+                            {t.testimonials_list.map((testimonial, i) => (
                                 <motion.div
                                     key={i}
                                     initial={{ opacity: 0, y: 20 }}
