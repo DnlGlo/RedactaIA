@@ -901,7 +901,7 @@ const App = () => {
                 {/* Generator Section */}
                 <section id="generator" className="py-32 px-4 relative">
                     <div className="max-w-5xl mx-auto">
-                        <div className="bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                        <div className="bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-visible relative">
                             <div className="p-8 md:p-12">
                                 <div className="flex items-center justify-between mb-12">
                                     <div>
