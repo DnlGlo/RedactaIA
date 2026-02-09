@@ -1119,14 +1119,40 @@ const App = () => {
                                         </motion.li>
                                     ))}
                                 </ul>
-                                <motion.button
-                                    whileHover={{ scale: 1.03, boxShadow: "0 15px 30px rgba(0,0,0,0.15)" }}
-                                    whileTap={{ scale: 0.97 }}
-                                    transition={{ duration: 0.1 }}
-                                    className="w-full py-4 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black transition-all shadow-xl"
-                                >
-                                    {t.pricing.start_btn}
-                                </motion.button>
+                                <div className="mt-auto">
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.5, duration: 0.5 }}
+                                    >
+                                        <PayPalButtons
+                                            style={{ layout: "vertical", shape: "pill", color: "silver" }}
+                                            createOrder={(data, actions) => {
+                                                return actions.order.create({
+                                                    purchase_units: [{
+                                                        amount: {
+                                                            value: billingCycle === 'monthly' ? "9.99" : "99.00",
+                                                            currency_code: "EUR"
+                                                        },
+                                                        description: `RedactaIA Básico (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
+                                                    }]
+                                                });
+                                            }}
+                                            onApprove={(data, actions) => {
+                                                return actions.order.capture().then(async (details) => {
+                                                    await supabase.from('subscriptions').insert({
+                                                        user_email: user?.email || details.payer.email_address,
+                                                        plan: 'Básico',
+                                                        status: 'active',
+                                                        paypal_order_id: details.id
+                                                    });
+                                                    alert("¡Gracias " + details.payer.name.given_name + "! Pago recibido. En menos de 2 horas activaremos tus ventajas del plan Básico.");
+                                                });
+                                            }}
+                                        />
+                                        <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
+                                    </motion.div>
+                                </div>
                             </motion.div>
 
                             {/* Premium */}
