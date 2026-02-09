@@ -97,12 +97,12 @@ const translations = {
         },
         faq: {
             title: 'Preguntas Frecuentes',
-            subtitle: 'Resolvemos tus dudas sobre RedactaIA.',
+            subtitle: 'Todo lo que necesitas saber para empezar a crear con RedactaIA.',
             questions: [
-                { q: '¿Es realmente gratuito?', a: 'Sí, ofrecemos 5 generaciones gratuitas al mes para que pruebes la potencia de nuestra IA.' },
-                { q: '¿Cómo funciona la suscripción?', a: 'Puedes elegir entre planes mensuales o anuales. Los pagos son seguros vía PayPal y puedes cancelar cuando quieras.' },
-                { q: '¿El contenido es original?', a: 'Totalmente. Cada texto se genera de forma única basándose en tus instrucciones específicas.' },
-                { q: '¿En qué idiomas puedo generar?', a: 'Actualmente soportamos más de 11 idiomas prioritarios con una gramática perfecta.' }
+                { q: '¿Cómo funciona la prueba gratuita?', a: 'Ofrecemos 5 generaciones completamente gratuitas cada mes para todos los usuarios registrados. No necesitas tarjeta de crédito para empezar. Esta cuota se reinicia automáticamente el primer día de cada mes, permitiéndote probar la calidad de nuestros modelos Llama 3.3 sin ningún compromiso.' },
+                { q: '¿Qué incluye la suscripción Premium?', a: 'El plan Premium desbloquea el potencial ilimitado de RedactaIA: generaciones infinitas, acceso exclusivo a los 11+ idiomas, todos los estilos de escritura avanzados (técnico, persuasivo, etc.) y soporte prioritario. Además, permite guardar y organizar todo tu historial de textos para acceder a ellos desde cualquier dispositivo.' },
+                { q: '¿Es el contenido seguro y original?', a: 'Absolutamente. Cada texto generado es único y creado desde cero por nuestra inteligencia artificial basándose en tus instrucciones. No reciclamos textos. Además, utilizamos protocolos de seguridad SSL y encriptación de datos para asegurar que tus prompts y resultados sean totalmente privados y confidenciales.' },
+                { q: '¿Puedo cancelar mi plan en cualquier momento?', a: 'Sí, la flexibilidad es clave. Puedes cancelar tu suscripción mensual o anual en cualquier momento directamente desde tu panel de usuario o vía PayPal. No hay contratos de permanencia ni costes ocultos. Si cancelas, seguirás teniendo acceso a las funciones Premium hasta que termine tu periodo de facturación actual.' }
             ]
         },
         legal_content: {
@@ -193,12 +193,12 @@ const translations = {
         },
         faq: {
             title: 'Perguntas Frequentes',
-            subtitle: 'Resolvemos suas dúvidas sobre a RedactaIA.',
+            subtitle: 'Tudo o que você precisa saber para começar a criar com o RedactaIA.',
             questions: [
-                { q: 'É realmente gratuito?', a: 'Sim, oferecemos 5 gerações gratuitas por mês para que você teste o poder da nossa IA.' },
-                { q: 'Como funciona a assinatura?', a: 'Você pode escolher entre planos mensais ou anuais. Os pagamentos são seguros via PayPal e você pode cancelar quando quiser.' },
-                { q: 'O conteúdo é original?', a: 'Totalmente. Cada texto é gerado de forma única com base em suas instruções específicas.' },
-                { q: 'Em quais idiomas posso gerar?', a: 'Atualmente suportamos mais de 11 idiomas prioritários com gramática perfeita.' }
+                { q: 'Como funciona o teste gratuito?', a: 'Oferecemos 5 gerações totalmente gratuitas por mês para todos os usuários registrados. Não é necessário cartão de crédito para começar. Esta cota é reiniciada automaticamente no primeiro dia de cada mês, permitindo que você teste a qualidade de nossos modelos Llama 3.3 sem compromisso.' },
+                { q: 'O que a assinatura Premium inclui?', a: 'O plano Premium desbloqueia o potencial ilimitado do RedactaIA: gerações infinitas, acesso exclusivo a mais de 11 idiomas, todos os estilos de escrita avançados (técnico, persuasivo, etc.) e suporte prioritário. Além disso, permite salvar e organizar todo o seu histórico de textos.' },
+                { q: 'O conteúdo é seguro e original?', a: 'Com certeza. Cada texto gerado é único e criado do zero pela nossa inteligência artificial com base em suas instruções. Não reciclamos textos anteriores. Além disso, usamos criptografia de dados para garantir que seus prompts e resultados sejam totalmente privados.' },
+                { q: 'Posso cancelar meu plano a qualquer momento?', a: 'Sim, a flexibilidade é fundamental. Você pode cancelar sua assinatura mensal ou anual a qualquer momento diretamente pelo seu painel ou via PayPal. Não há contratos de permanência. Se cancelar, você continuará tendo acesso ao Premium até o fim do seu período atual.' }
             ]
         },
         legal_content: {
@@ -289,12 +289,12 @@ const translations = {
         },
         faq: {
             title: 'Frequently Asked Questions',
-            subtitle: 'Answering your questions about RedactaIA.',
+            subtitle: 'Everything you need to know to start creating with RedactaIA.',
             questions: [
-                { q: 'Is it really free?', a: 'Yes, we offer 5 free generations per month so you can test the power of our AI.' },
-                { q: 'How does the subscription work?', a: 'You can choose between monthly or annual plans. Payments are secure via PayPal and you can cancel anytime.' },
-                { q: 'Is the content original?', a: 'Absolutely. Each text is uniquely generated based on your specific instructions.' },
-                { q: 'What languages can I generate in?', a: 'We currently support over 11 priority languages with perfect grammar.' }
+                { q: 'How does the free trial work?', a: 'We offer 5 completely free generations every month for all registered users. No credit card is required to start. This quota resets automatically on the first day of each month, allowing you to test the quality of our Llama 3.3 models without any commitment.' },
+                { q: 'What does the Premium subscription include?', a: 'The Premium plan unlocks the unlimited potential of RedactaIA: infinite generations, exclusive access to 11+ languages, all advanced writing styles (technical, persuasive, etc.), and priority support. Plus, it allows you to save and organize your text history.' },
+                { q: 'Is the content secure and original?', a: 'Absolutely. Each generated text is unique and created from scratch by our AI based on your specific instructions. We do not recycle texts. Furthermore, we use SSL security and data encryption to ensure your prompts and results stay private and confidential.' },
+                { q: 'Can I cancel my plan anytime?', a: 'Yes, flexibility is key. You can cancel your monthly or annual subscription at any time directly from your dashboard or via PayPal. There are no lock-in contracts or hidden fees. If you cancel, you will keep your Premium access until the end of the current billing cycle.' }
             ]
         },
         legal_content: {
@@ -357,6 +357,7 @@ const App = () => {
         style: 'Formal'
     });
     const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' or 'annual'
+    const [activeFaq, setActiveFaq] = useState(null);
 
     // Theme logic
     useEffect(() => {
@@ -1385,15 +1386,40 @@ const App = () => {
                                     initial={{ opacity: 0, y: 10 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.1 }}
-                                    className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl p-8 border border-slate-200/50 dark:border-slate-800/50"
+                                    className={`group cursor-pointer rounded-[2rem] border transition-all duration-300 ${activeFaq === i
+                                        ? 'bg-primary-50/50 dark:bg-primary-900/10 border-primary-200 dark:border-primary-800'
+                                        : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200/50 dark:border-slate-800/50 hover:border-primary-300'}`}
+                                    onClick={() => setActiveFaq(activeFaq === i ? null : i)}
                                 >
-                                    <h3 className="text-xl font-bold mb-3 flex items-center gap-3">
-                                        <HelpCircle className="text-primary-600" size={20} />
-                                        {item.q}
-                                    </h3>
-                                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium pl-8">
-                                        {item.a}
-                                    </p>
+                                    <div className="p-8 flex items-center justify-between font-bold">
+                                        <div className="flex items-center gap-4 text-slate-900 dark:text-white">
+                                            <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${activeFaq === i ? 'bg-primary-600 text-white' : 'bg-white dark:bg-slate-800 text-primary-600 border border-slate-200 dark:border-slate-700'}`}>
+                                                <HelpCircle size={20} />
+                                            </div>
+                                            <span className="text-xl">{item.q}</span>
+                                        </div>
+                                        <ChevronDown
+                                            size={20}
+                                            className={`flex-shrink-0 text-slate-400 transition-transform duration-300 ${activeFaq === i ? 'rotate-180 text-primary-600' : ''}`}
+                                        />
+                                    </div>
+                                    <AnimatePresence>
+                                        {activeFaq === i && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                className="overflow-hidden"
+                                            >
+                                                <div className="px-8 pb-8 pt-0 md:pl-24">
+                                                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium text-lg">
+                                                        {item.a}
+                                                    </p>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </motion.div>
                             ))}
                         </div>
