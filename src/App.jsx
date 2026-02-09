@@ -358,7 +358,7 @@ const CustomSelect = ({ value, onChange, options, freeOptions, isPremium, icon: 
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                             className="absolute z-[70] w-full mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl"
                         >
-                            <div className="max-h-60 overflow-y-auto p-2 space-y-1 custom-scrollbar">
+                            <div className="p-2 space-y-1">
                                 {options.map((opt) => {
                                     const isLocked = !isPremium && freeOptions && !freeOptions.includes(opt);
                                     const isSelected = value === opt;
