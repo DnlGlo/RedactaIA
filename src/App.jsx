@@ -332,6 +332,70 @@ const translations = {
     }
 };
 
+const CustomSelect = ({ value, onChange, options, freeOptions, isPremium, icon: Icon, label, alertMsg, className = "" }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className={`relative ${className}`}>
+            <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                {Icon && <Icon size={12} />} {label}
+            </label>
+            <div
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm cursor-pointer flex justify-between items-center group hover:border-primary-500 transition-all shadow-sm"
+            >
+                <span className="truncate">{value}</span>
+                <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary-500' : ''}`} />
+            </div>
+
+            <AnimatePresence>
+                {isOpen && (
+                    <>
+                        <div className="fixed inset-0 z-[60]" onClick={() => setIsOpen(false)} />
+                        <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 5, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute z-[70] w-full mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl"
+                        >
+                            <div className="max-h-60 overflow-y-auto p-2 space-y-1 custom-scrollbar">
+                                {options.map((opt) => {
+                                    const isLocked = !isPremium && freeOptions && !freeOptions.includes(opt);
+                                    const isSelected = value === opt;
+
+                                    return (
+                                        <div
+                                            key={opt}
+                                            onClick={() => {
+                                                if (isLocked) {
+                                                    alert(alertMsg || "Premium Only");
+                                                    return;
+                                                }
+                                                onChange(opt);
+                                                setIsOpen(false);
+                                            }}
+                                            className={`p-3 rounded-xl text-sm font-bold flex justify-between items-center transition-all cursor-pointer ${isSelected
+                                                ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30'
+                                                : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                                } ${isLocked ? 'opacity-50' : ''}`}
+                                        >
+                                            <span>{opt}</span>
+                                            <div className="flex items-center gap-2">
+                                                {isLocked && <Lock size={12} className="text-amber-500" />}
+                                                {isSelected && !isLocked && <Check size={14} />}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
 const App = () => {
     const [lang, setLang] = useState('es');
     const t = translations[lang];
@@ -345,6 +409,7 @@ const App = () => {
     const [showLimitModal, setShowLimitModal] = useState(false);
     const [currentGenerationCount, setCurrentGenerationCount] = useState(0);
     const [showAdminPanel, setShowAdminPanel] = useState(false);
+    const [showLangMenu, setShowLangMenu] = useState(false);
     const [adminData, setAdminData] = useState({
         users: [],
         subscriptions: [],
@@ -665,16 +730,47 @@ const App = () => {
                                     {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                                 </button>
                                 <div className="relative">
-                                    <select
-                                        value={lang}
-                                        onChange={(e) => setLang(e.target.value)}
-                                        className="appearance-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-sm py-2.5 px-6 rounded-full cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors outline-none focus:ring-2 focus:ring-primary-500"
+                                    <div
+                                        onClick={() => setShowLangMenu(!showLangMenu)}
+                                        className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-sm py-2.5 px-6 rounded-full cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
                                     >
-                                        <option value="es">Español</option>
-                                        <option value="pt">Português</option>
-                                        <option value="en">English</option>
-                                    </select>
-                                    <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                                        <span>{lang === 'es' ? 'Español' : lang === 'pt' ? 'Português' : 'English'}</span>
+                                        <ChevronDown size={14} className={`transition-transform duration-300 ${showLangMenu ? 'rotate-180 text-primary-500' : ''}`} />
+                                    </div>
+
+                                    <AnimatePresence>
+                                        {showLangMenu && (
+                                            <>
+                                                <div className="fixed inset-0 z-[60]" onClick={() => setShowLangMenu(false)} />
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                    animate={{ opacity: 1, y: 5, scale: 1 }}
+                                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                    className="absolute right-0 z-[70] mt-2 w-48 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl p-2 space-y-1"
+                                                >
+                                                    {[
+                                                        { val: 'es', label: 'Español' },
+                                                        { val: 'pt', label: 'Português' },
+                                                        { val: 'en', label: 'English' }
+                                                    ].map((opt) => (
+                                                        <div
+                                                            key={opt.val}
+                                                            onClick={() => {
+                                                                setLang(opt.val);
+                                                                setShowLangMenu(false);
+                                                            }}
+                                                            className={`p-3 rounded-xl text-sm font-bold transition-all cursor-pointer ${lang === opt.val
+                                                                ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30'
+                                                                : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                                                }`}
+                                                        >
+                                                            {opt.label}
+                                                        </div>
+                                                    ))}
+                                                </motion.div>
+                                            </>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
                                 {isLoggedIn ? (
                                     <div className="flex items-center space-x-3 bg-slate-100 dark:bg-slate-800 p-1 pr-3 rounded-full border border-slate-200 dark:border-slate-700">
@@ -893,72 +989,35 @@ const App = () => {
                                                     </div>
 
                                                     <div className="grid grid-cols-2 gap-4">
-                                                        <div>
-                                                            <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                                                <Globe size={12} /> {t.generator.lang_label}
-                                                            </label>
-                                                            <select
-                                                                className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm"
-                                                                value={generatorConfig.language}
-                                                                onChange={(e) => {
-                                                                    if (!isPremium && !freeLanguages.includes(e.target.value)) {
-                                                                        alert(t.alerts.premium_only);
-                                                                        return;
-                                                                    }
-                                                                    setGeneratorConfig({ ...generatorConfig, language: e.target.value });
-                                                                }}
-                                                            >
-                                                                {languages.map(l => (
-                                                                    <option
-                                                                        key={l}
-                                                                        value={l}
-                                                                        disabled={!isPremium && !freeLanguages.includes(l)}
-                                                                    >
-                                                                        {l} {!isPremium && !freeLanguages.includes(l) ? '🔒' : ''}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                                                <FileText size={12} /> {t.generator.type_label}
-                                                            </label>
-                                                            <select
-                                                                className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm"
-                                                                value={generatorConfig.type}
-                                                                onChange={(e) => setGeneratorConfig({ ...generatorConfig, type: e.target.value })}
-                                                            >
-                                                                {textTypes.map(t => <option key={t} value={t}>{t}</option>)}
-                                                            </select>
-                                                        </div>
+                                                        <CustomSelect
+                                                            label={t.generator.lang_label}
+                                                            icon={Globe}
+                                                            value={generatorConfig.language}
+                                                            options={languages}
+                                                            freeOptions={freeLanguages}
+                                                            isPremium={isPremium}
+                                                            onChange={(val) => setGeneratorConfig({ ...generatorConfig, language: val })}
+                                                            alertMsg={t.alerts.premium_only}
+                                                        />
+                                                        <CustomSelect
+                                                            label={t.generator.type_label}
+                                                            icon={FileText}
+                                                            value={generatorConfig.type}
+                                                            options={textTypes}
+                                                            onChange={(val) => setGeneratorConfig({ ...generatorConfig, type: val })}
+                                                        />
                                                     </div>
 
-                                                    <div>
-                                                        <label className="block text-xs font-black mb-2 text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                                            <Palette size={12} /> {t.generator.style_label}
-                                                        </label>
-                                                        <select
-                                                            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 outline-none font-bold text-sm"
-                                                            value={generatorConfig.style}
-                                                            onChange={(e) => {
-                                                                if (!isPremium && !freeStyles.includes(e.target.value)) {
-                                                                    alert("🔒 Esta opción es solo para usuarios Premium. ¡Suscríbete para desbloquear todos los estilos!");
-                                                                    return;
-                                                                }
-                                                                setGeneratorConfig({ ...generatorConfig, style: e.target.value });
-                                                            }}
-                                                        >
-                                                            {styles.map(s => (
-                                                                <option
-                                                                    key={s}
-                                                                    value={s}
-                                                                    disabled={!isPremium && !freeStyles.includes(s)}
-                                                                >
-                                                                    {s} {!isPremium && !freeStyles.includes(s) ? '🔒' : ''}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
+                                                    <CustomSelect
+                                                        label={t.generator.style_label}
+                                                        icon={Palette}
+                                                        value={generatorConfig.style}
+                                                        options={styles}
+                                                        freeOptions={freeStyles}
+                                                        isPremium={isPremium}
+                                                        onChange={(val) => setGeneratorConfig({ ...generatorConfig, style: val })}
+                                                        alertMsg="🔒 Esta opción es solo para usuarios Premium. ¡Suscríbete para desbloquear todos los estilos!"
+                                                    />
 
                                                     <button
                                                         onClick={handleGenerate}
