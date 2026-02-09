@@ -25,6 +25,7 @@ import {
     ArrowDown,
     Globe,
     FileText,
+    HelpCircle,
     X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -42,7 +43,7 @@ const premiumUsers = [
 
 const translations = {
     es: {
-        nav: { features: 'Características', generator: 'Generador', pricing: 'Precios', testimonials: 'Testimonios', contact: 'Contacto', start: 'Empezar' },
+        nav: { features: 'Características', generator: 'Generador', pricing: 'Precios', testimonials: 'Testimonios', faq: 'FAQ', contact: 'Contacto', start: 'Empezar' },
         hero: { title_start: 'Genera textos', title_highlight: 'profesionales', title_end: 'con IA en segundos', subtitle: 'La herramienta de inteligencia artificial más potente para crear informes, guiones y contenidos profesionales en segundos.', cta: 'Ir al Generador', social_proof: 'usuarios confían en nosotros', powered: 'Impulsado por Llama 3.3 (Ultra Rápido)' },
         benefits: { speed_title: 'Velocidad Increíble', speed_desc: 'Genera textos complejos en menos de 5 segundos.', quality_title: 'Calidad Premium', quality_desc: 'Resultados con coherencia humana y estilo profesional.', multi_title: 'Multilingüe', multi_desc: 'Disponible en más de 11 idiomas con precisión total.' },
         generator: { title: 'Generador de IA', subtitle: 'Configura y crea tu texto perfecto.', logged_in: 'Sesión Activa', topic_label: 'Tema o Prompt', topic_placeholder: '¿Sobre qué quieres que escriba hoy?', lang_label: 'Idioma', type_label: 'Tipo', style_label: 'Estilo', generate_btn: '¡Generar ahora!', generating_btn: 'Generando...', free_usage: 'Generaciones Gratuitas', result_label: 'Resultado de RedactaIA', copy: 'COPIAR', waiting: 'Esperando tu gran idea...' },
@@ -94,6 +95,16 @@ const translations = {
             types: ['Redacción', 'Informe', 'Guion', 'Email', 'Redes Sociales', 'Blog Post', 'Newsletter', 'Resumen Ejecutivo', 'Carta Formal', 'Poema', 'Diálogo'],
             styles: ['Formal', 'Informal', 'Humorístico', 'Profesional', 'Optimista', 'Persuasivo', 'Técnico', 'Narrativo', 'Descriptivo', 'Inspiracional']
         },
+        faq: {
+            title: 'Preguntas Frecuentes',
+            subtitle: 'Resolvemos tus dudas sobre RedactaIA.',
+            questions: [
+                { q: '¿Es realmente gratuito?', a: 'Sí, ofrecemos 5 generaciones gratuitas al mes para que pruebes la potencia de nuestra IA.' },
+                { q: '¿Cómo funciona la suscripción?', a: 'Puedes elegir entre planes mensuales o anuales. Los pagos son seguros vía PayPal y puedes cancelar cuando quieras.' },
+                { q: '¿El contenido es original?', a: 'Totalmente. Cada texto se genera de forma única basándose en tus instrucciones específicas.' },
+                { q: '¿En qué idiomas puedo generar?', a: 'Actualmente soportamos más de 11 idiomas prioritarios con una gramática perfecta.' }
+            ]
+        },
         legal_content: {
             privacy: {
                 title: 'Política de Privacidad',
@@ -128,7 +139,7 @@ const translations = {
         }
     },
     pt: {
-        nav: { features: 'Recursos', generator: 'Gerador', pricing: 'Preços', testimonials: 'Depoimentos', contact: 'Contato', start: 'Começar' },
+        nav: { features: 'Recursos', generator: 'Gerador', pricing: 'Preços', testimonials: 'Depoimentos', faq: 'FAQ', contact: 'Contato', start: 'Começar' },
         hero: { title_start: 'Gere textos', title_highlight: 'profissionais', title_end: 'com IA em segundos', subtitle: 'A ferramenta de inteligência artificial mais poderosa para criar relatórios, roteiros e conteúdos profissionais em segundos.', cta: 'Ir para o Gerador', social_proof: 'usuários confiam em nós', powered: 'Impulsionado por Llama 3.3 (Ultra Rápido)' },
         benefits: { speed_title: 'Velocidade Incrível', speed_desc: 'Gere textos complexos em menos de 5 segundos.', quality_title: 'Qualidade Premium', quality_desc: 'Resultados com coerência humana e estilo profissional.', multi_title: 'Multilíngue', multi_desc: 'Disponível em mais de 11 idiomas com precisão total.' },
         generator: { title: 'Gerador de IA', subtitle: 'Configure e crie seu texto perfeito.', logged_in: 'Sessão Ativa', topic_label: 'Tema ou Prompt', topic_placeholder: 'Sobre o que você quer que eu escreva hoje?', lang_label: 'Idioma', type_label: 'Tipo', style_label: 'Estilo', generate_btn: 'Gerar agora!', generating_btn: 'Gerando...', free_usage: 'Gerações Gratuitas', result_label: 'Resultado da RedactaIA', copy: 'COPIAR', waiting: 'Esperando sua grande ideia...' },
@@ -176,9 +187,19 @@ const translations = {
             preview: 'Prévia gerada parcialmente. Faça login para ver o resultado completo...',
         },
         options: {
-            languages: ['Espanhol', 'Inglês', 'Francês', 'Alemão', 'Italiano', 'Português', 'Holandês', 'Russo', 'Chinês', 'Japonês', 'Árabe'],
+            languages: ['Espanhol', 'Inglês', 'Francês', 'Alemão', 'Italiano', 'Português', 'Holandés', 'Russo', 'Chinês', 'Japonês', 'Árabe'],
             types: ['Redação', 'Relatório', 'Roteiro', 'Email', 'Redes Sociais', 'Blog Post', 'Newsletter', 'Resumo Executivo', 'Carta Formal', 'Poema', 'Diálogo'],
             styles: ['Formal', 'Informal', 'Humorístico', 'Profissional', 'Otimista', 'Persuasivo', 'Técnico', 'Narrativo', 'Descritivo', 'Inspiracional']
+        },
+        faq: {
+            title: 'Perguntas Frequentes',
+            subtitle: 'Resolvemos suas dúvidas sobre a RedactaIA.',
+            questions: [
+                { q: 'É realmente gratuito?', a: 'Sim, oferecemos 5 gerações gratuitas por mês para que você teste o poder da nossa IA.' },
+                { q: 'Como funciona a assinatura?', a: 'Você pode escolher entre planos mensais ou anuais. Os pagamentos são seguros via PayPal e você pode cancelar quando quiser.' },
+                { q: 'O conteúdo é original?', a: 'Totalmente. Cada texto é gerado de forma única com base em suas instruções específicas.' },
+                { q: 'Em quais idiomas posso gerar?', a: 'Atualmente suportamos mais de 11 idiomas prioritários com gramática perfeita.' }
+            ]
         },
         legal_content: {
             privacy: {
@@ -214,7 +235,7 @@ const translations = {
         }
     },
     en: {
-        nav: { features: 'Features', generator: 'Generator', pricing: 'Pricing', testimonials: 'Testimonials', contact: 'Contact', start: 'Start' },
+        nav: { features: 'Features', generator: 'Generator', pricing: 'Pricing', testimonials: 'Testimonials', faq: 'FAQ', contact: 'Contact', start: 'Start' },
         hero: { title_start: 'Generate', title_highlight: 'professional', title_end: 'AI texts in seconds', subtitle: 'The most powerful AI tool to create reports, scripts, and professional content in seconds.', cta: 'Go to Generator', social_proof: 'users trust us', powered: 'Powered by Llama 3.3 (Ultra Fast)' },
         benefits: { speed_title: 'Incredible Speed', speed_desc: 'Generate complex texts in less than 5 seconds.', quality_title: 'Premium Quality', quality_desc: 'Results with human coherence and professional style.', multi_title: 'Multilingual', multi_desc: 'Available in over 11 languages with total precision.' },
         generator: { title: 'AI Generator', subtitle: 'Configure and create your perfect text.', logged_in: 'Active Session', topic_label: 'Topic or Prompt', topic_placeholder: 'What do you want me to write about today?', lang_label: 'Language', type_label: 'Type', style_label: 'Style', generate_btn: 'Generate Now!', generating_btn: 'Generating...', free_usage: 'Free Generations', result_label: 'RedactaIA Result', copy: 'COPY', waiting: 'Waiting for your big idea...' },
@@ -265,6 +286,16 @@ const translations = {
             languages: ['Spanish', 'English', 'French', 'German', 'Italian', 'Portuguese', 'Dutch', 'Russian', 'Chinese', 'Japanese', 'Arabic'],
             types: ['Writing', 'Report', 'Script', 'Email', 'Social Media', 'Blog Post', 'Newsletter', 'Executive Summary', 'Formal Letter', 'Poem', 'Dialogue'],
             styles: ['Formal', 'Informal', 'Humorous', 'Professional', 'Optimistic', 'Persuasive', 'Technical', 'Narrative', 'Descriptive', 'Inspirational']
+        },
+        faq: {
+            title: 'Frequently Asked Questions',
+            subtitle: 'Answering your questions about RedactaIA.',
+            questions: [
+                { q: 'Is it really free?', a: 'Yes, we offer 5 free generations per month so you can test the power of our AI.' },
+                { q: 'How does the subscription work?', a: 'You can choose between monthly or annual plans. Payments are secure via PayPal and you can cancel anytime.' },
+                { q: 'Is the content original?', a: 'Absolutely. Each text is uniquely generated based on your specific instructions.' },
+                { q: 'What languages can I generate in?', a: 'We currently support over 11 priority languages with perfect grammar.' }
+            ]
         },
         legal_content: {
             privacy: {
@@ -566,6 +597,7 @@ const App = () => {
         { name: t.nav.generator, id: 'generator' },
         { name: t.nav.pricing, id: 'pricing' },
         { name: t.nav.testimonials, id: 'testimonials' },
+        { name: t.nav.faq, id: 'faq' },
         { name: t.nav.contact, id: 'contact' },
     ];
 
@@ -1334,6 +1366,36 @@ const App = () => {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* FAQ Section */}
+                <section id="faq" className="py-32 bg-white dark:bg-slate-950">
+                    <div className="max-w-4xl mx-auto px-4">
+                        <div className="text-center mb-16">
+                            <h2 className="text-4xl md:text-5xl font-black mb-6">{t.faq.title}</h2>
+                            <p className="text-slate-600 dark:text-slate-400 font-medium">{t.faq.subtitle}</p>
+                        </div>
+
+                        <div className="space-y-4">
+                            {t.faq.questions.map((item, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl p-8 border border-slate-200/50 dark:border-slate-800/50"
+                                >
+                                    <h3 className="text-xl font-bold mb-3 flex items-center gap-3">
+                                        <HelpCircle className="text-primary-600" size={20} />
+                                        {item.q}
+                                    </h3>
+                                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium pl-8">
+                                        {item.a}
+                                    </p>
+                                </motion.div>
+                            ))}
                         </div>
                     </div>
                 </section>
