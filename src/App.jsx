@@ -607,7 +607,7 @@ const App = () => {
     const styles = t.options.styles;
 
     // Free Tier Restrictions
-    const freeLanguages = ['Español', 'English'];
+    const freeLanguages = ['Español', 'English', 'Inglés', 'Inglês', 'Espanhol', 'Spanish'];
     const freeStyles = ['Formal', 'Informal', 'Humorístico', 'Profesional'];
 
     const isPremium = user && premiumUsers.includes(user.email);
