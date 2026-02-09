@@ -1120,38 +1120,42 @@ const App = () => {
                                     ))}
                                 </ul>
                                 <div className="mt-auto">
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.5, duration: 0.5 }}
-                                    >
-                                        <PayPalButtons
-                                            style={{ layout: "vertical", shape: "pill", color: "silver" }}
-                                            createOrder={(data, actions) => {
-                                                return actions.order.create({
-                                                    purchase_units: [{
-                                                        amount: {
-                                                            value: billingCycle === 'monthly' ? "9.99" : "99.00",
-                                                            currency_code: "EUR"
-                                                        },
-                                                        description: `RedactaIA Básico (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
-                                                    }]
-                                                });
-                                            }}
-                                            onApprove={(data, actions) => {
-                                                return actions.order.capture().then(async (details) => {
-                                                    await supabase.from('subscriptions').insert({
-                                                        user_email: user?.email || details.payer.email_address,
-                                                        plan: 'Básico',
-                                                        status: 'active',
-                                                        paypal_order_id: details.id
+                                    <div className="min-h-[150px]">
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.4 }}
+                                        >
+                                            <PayPalButtons
+                                                key={`basic-${billingCycle}`}
+                                                style={{ layout: "vertical", shape: "pill", color: "silver" }}
+                                                createOrder={(data, actions) => {
+                                                    return actions.order.create({
+                                                        purchase_units: [{
+                                                            amount: {
+                                                                value: billingCycle === 'monthly' ? "9.99" : "99.00",
+                                                                currency_code: "EUR"
+                                                            },
+                                                            description: `RedactaIA Básico (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
+                                                        }]
                                                     });
-                                                    alert("¡Gracias " + details.payer.name.given_name + "! Pago recibido. En menos de 2 horas activaremos tus ventajas del plan Básico.");
-                                                });
-                                            }}
-                                        />
-                                        <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
-                                    </motion.div>
+                                                }}
+                                                onApprove={(data, actions) => {
+                                                    return actions.order.capture().then(async (details) => {
+                                                        await supabase.from('subscriptions').insert({
+                                                            user_email: user?.email || details.payer.email_address,
+                                                            plan: 'Básico',
+                                                            status: 'active',
+                                                            paypal_order_id: details.id
+                                                        });
+                                                        alert("¡Gracias " + details.payer.name.given_name + "! Pago recibido. En menos de 2 horas activaremos tus ventajas del plan Básico.");
+                                                    });
+                                                }}
+                                            />
+                                            <p className="text-[10px] text-center mt-4 opacity-50 font-bold italic">Activación manual en menos de 2h laborables.</p>
+                                        </motion.div>
+                                    </div>
                                 </div>
                             </motion.div>
 
@@ -1222,39 +1226,43 @@ const App = () => {
                                     ))}
                                 </ul>
                                 <div className="mt-auto">
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 1.2, duration: 0.5 }}
-                                    >
-                                        <PayPalButtons
-                                            style={{ layout: "vertical", shape: "pill", label: "subscribe" }}
-                                            createOrder={(data, actions) => {
-                                                return actions.order.create({
-                                                    purchase_units: [{
-                                                        amount: {
-                                                            value: billingCycle === 'monthly' ? "19.99" : "199.00",
-                                                            currency_code: "EUR"
-                                                        },
-                                                        description: `RedactaIA Premium (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
-                                                    }]
-                                                });
-                                            }}
-                                            onApprove={(data, actions) => {
-                                                return actions.order.capture().then(async (details) => {
-                                                    // Guardar suscripción en DB
-                                                    await supabase.from('subscriptions').insert({
-                                                        user_email: user?.email || details.payer.email_address,
-                                                        plan: 'Premium',
-                                                        status: 'active',
-                                                        paypal_order_id: details.id
+                                    <div className="min-h-[150px]">
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.4 }}
+                                        >
+                                            <PayPalButtons
+                                                key={`premium-${billingCycle}`}
+                                                style={{ layout: "vertical", shape: "pill", label: "subscribe" }}
+                                                createOrder={(data, actions) => {
+                                                    return actions.order.create({
+                                                        purchase_units: [{
+                                                            amount: {
+                                                                value: billingCycle === 'monthly' ? "19.99" : "199.00",
+                                                                currency_code: "EUR"
+                                                            },
+                                                            description: `RedactaIA Premium (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
+                                                        }]
                                                     });
-                                                    alert("¡Gracias " + details.payer.name.given_name + "! Pago recibido. En menos de 2 horas activaremos tus ventajas Premium.");
-                                                });
-                                            }}
-                                        />
-                                        <p className="text-[10px] text-center mt-4 opacity-50 font-bold">Activación manual en menos de 2h laborables.</p>
-                                    </motion.div>
+                                                }}
+                                                onApprove={(data, actions) => {
+                                                    return actions.order.capture().then(async (details) => {
+                                                        // Guardar suscripción en DB
+                                                        await supabase.from('subscriptions').insert({
+                                                            user_email: user?.email || details.payer.email_address,
+                                                            plan: 'Premium',
+                                                            status: 'active',
+                                                            paypal_order_id: details.id
+                                                        });
+                                                        alert("¡Gracias " + details.payer.name.given_name + "! Pago recibido. En menos de 2 horas activaremos tus ventajas Premium.");
+                                                    });
+                                                }}
+                                            />
+                                            <p className="text-[10px] text-center mt-4 opacity-50 font-bold italic">Activación manual en menos de 2h laborables.</p>
+                                        </motion.div>
+                                    </div>
                                 </div>
                             </motion.div>
 
@@ -1312,32 +1320,36 @@ const App = () => {
                                     ))}
                                 </ul>
                                 <div className="mt-auto">
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 1.5, duration: 0.5 }}
-                                    >
-                                        <PayPalButtons
-                                            style={{ layout: "vertical", shape: "pill", color: "black" }}
-                                            createOrder={(data, actions) => {
-                                                return actions.order.create({
-                                                    purchase_units: [{
-                                                        amount: {
-                                                            value: billingCycle === 'monthly' ? "59.99" : "599.00",
-                                                            currency_code: "EUR"
-                                                        },
-                                                        description: `RedactaIA Empresa (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
-                                                    }]
-                                                });
-                                            }}
-                                            onApprove={(data, actions) => {
-                                                return actions.order.capture().then(async (details) => {
-                                                    alert(t.alerts.contact_success);
-                                                });
-                                            }}
-                                        />
-                                        <p className="text-[10px] text-center mt-4 opacity-50 font-bold">{t.pricing.enterprise_manual}</p>
-                                    </motion.div>
+                                    <div className="min-h-[150px]">
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.4 }}
+                                        >
+                                            <PayPalButtons
+                                                key={`enterprise-${billingCycle}`}
+                                                style={{ layout: "vertical", shape: "pill", color: "black" }}
+                                                createOrder={(data, actions) => {
+                                                    return actions.order.create({
+                                                        purchase_units: [{
+                                                            amount: {
+                                                                value: billingCycle === 'monthly' ? "59.99" : "599.00",
+                                                                currency_code: "EUR"
+                                                            },
+                                                            description: `RedactaIA Empresa (${billingCycle === 'monthly' ? 'Mensual' : 'Anual'})`
+                                                        }]
+                                                    });
+                                                }}
+                                                onApprove={(data, actions) => {
+                                                    return actions.order.capture().then(async (details) => {
+                                                        alert(t.alerts.contact_success);
+                                                    });
+                                                }}
+                                            />
+                                            <p className="text-[10px] text-center mt-4 opacity-50 font-bold italic">{t.pricing.enterprise_manual}</p>
+                                        </motion.div>
+                                    </div>
                                 </div>
                             </motion.div>
                         </div>
