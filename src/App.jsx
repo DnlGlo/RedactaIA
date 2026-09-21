@@ -448,6 +448,94 @@ const App = () => {
         if (user) fetchUsage();
     }, [user]);
 
+    const generateWithGroq = async (apiKey, messages) => {
+        const candidateModels = [
+            "llama-3.3-70b-versatile",
+            "llama-3.1-8b-instant",
+            "gemma2-9b-it"
+        ];
+
+        const cleanKey = apiKey.trim();
+        let lastError = null;
+
+        // 1. Probar modelos candidatos principales
+        for (const model of candidateModels) {
+            try {
+                const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cleanKey}`
+                    },
+                    body: JSON.stringify({
+                        model,
+                        messages,
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.choices && data.choices[0]?.message?.content) {
+                    return data.choices[0].message.content;
+                }
+
+                if (res.status === 401 || res.status === 429) {
+                    throw new Error(`[HTTP ${res.status}] ${data.error?.message || "Error en Groq"}`);
+                }
+
+                lastError = new Error(`[HTTP ${res.status}] ${data.error?.message || "Error en Groq"}`);
+            } catch (err) {
+                if (err.message.includes("401") || err.message.includes("429")) throw err;
+                lastError = err;
+            }
+        }
+
+        // 2. Fallback inteligente: consultar modelos activos en la cuenta del usuario
+        try {
+            const modelsRes = await fetch('https://api.groq.com/openai/v1/models', {
+                headers: { 'Authorization': `Bearer ${cleanKey}` }
+            });
+            if (modelsRes.ok) {
+                const modelsData = await modelsRes.json();
+                const availableChatModels = (modelsData.data || [])
+                    .map(m => m.id)
+                    .filter(id => !id.includes('whisper') && !id.includes('guard'));
+
+                for (const dynamicModel of availableChatModels) {
+                    if (candidateModels.includes(dynamicModel)) continue;
+                    try {
+                        const dynamicRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${cleanKey}`
+                            },
+                            body: JSON.stringify({
+                                model: dynamicModel,
+                                messages,
+                                temperature: 0.7
+                            })
+                        });
+                        const dynamicData = await dynamicRes.json();
+                        if (dynamicRes.ok && dynamicData.choices?.[0]?.message?.content) {
+                            return dynamicData.choices[0].message.content;
+                        }
+                    } catch (e) {
+                        // Siguiente modelo dinámico
+                    }
+                }
+
+                if (availableChatModels.length > 0) {
+                    throw new Error(`Modelos estándar bloqueados. Modelos detectados en tu cuenta: ${availableChatModels.slice(0, 5).join(', ')}`);
+                }
+            }
+        } catch (discoveryErr) {
+            if (discoveryErr.message.includes("detectados")) throw discoveryErr;
+        }
+
+        throw lastError || new Error("No se pudo generar el texto con los modelos disponibles.");
+    };
+
     const handleGenerate = async () => {
         if (!generatorConfig.topic) return;
 
@@ -471,31 +559,15 @@ const App = () => {
                 GENERATE A BRIEF PREVIEW (2-3 paragraphs).
                 Output MUST be in ${generatorConfig.language.toUpperCase()}.`;
 
-                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify({
-                        model: "mixtral-8x7b-32768",
-                        messages: [
-                            { role: "system", content: "Eres un redactor profesional experto." },
-                            { role: "user", content: previewPrompt }
-                        ],
-                        temperature: 0.7
-                    })
-                });
-
-                const data = await response.json();
-                if (!response.ok) throw new Error(`[HTTP ${response.status}] ${data.error?.message || "Error en la API de Groq"}`);
-
-                const text = data.choices[0].message.content;
+                const text = await generateWithGroq(apiKey, [
+                    { role: "system", content: "Eres un redactor profesional experto." },
+                    { role: "user", content: previewPrompt }
+                ]);
                 setGeneratedText(text);
 
             } catch (error) {
                 console.error(error);
-                setGeneratedText(t.alerts.contact_error);
+                setGeneratedText(`ERROR: ${error.message}\n\nIntenta recargar la página o verifica tu clave de Groq.`);
             } finally {
                 setIsGenerating(false);
             }
@@ -548,26 +620,10 @@ const App = () => {
             4. Estructura el contenido con párrafos claros y saltos de línea normales.
             5. El resultado debe estar listo para copiar y pegar directamente sin necesidad de limpieza.`;
 
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: "mixtral-8x7b-32768",
-                    messages: [
-                        { role: "system", content: "Eres un redactor profesional experto." },
-                        { role: "user", content: prompt }
-                    ],
-                    temperature: 0.7
-                })
-            });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(`[HTTP ${response.status}] ${data.error?.message || "Error en la API de Groq"}`);
-
-            const text = data.choices[0].message.content;
+            const text = await generateWithGroq(apiKey, [
+                { role: "system", content: "Eres un redactor profesional experto." },
+                { role: "user", content: prompt }
+            ]);
             setGeneratedText(text);
 
             // Log generation
