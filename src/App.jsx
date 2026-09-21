@@ -428,24 +428,63 @@ const App = () => {
         }
     }, [showAdminPanel]);
 
+    const getMonthKey = (email) => {
+        const d = new Date();
+        const yearMonth = `${d.getFullYear()}_${String(d.getMonth() + 1).padStart(2, '0')}`;
+        const cleanEmail = (email || 'guest').toLowerCase().trim();
+        return `redactaia_usage_${cleanEmail}_${yearMonth}`;
+    };
+
+    const getLocalUsage = (email) => {
+        try {
+            const val = localStorage.getItem(getMonthKey(email));
+            return val ? Math.max(0, parseInt(val, 10)) : 0;
+        } catch {
+            return 0;
+        }
+    };
+
+    const setLocalUsage = (email, count) => {
+        try {
+            localStorage.setItem(getMonthKey(email), String(count));
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     // Fetch generation usage
     const fetchUsage = async () => {
-        if (!user) return;
-        const startOfMonth = new Date();
-        startOfMonth.setDate(1);
-        startOfMonth.setHours(0, 0, 0, 0);
+        const email = user?.email || 'guest';
+        const local = getLocalUsage(email);
 
-        const { count } = await supabase
-            .from('generations')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_email', user.email)
-            .gte('created_at', startOfMonth.toISOString());
+        let supa = 0;
+        if (user?.email) {
+            try {
+                const startOfMonth = new Date();
+                startOfMonth.setDate(1);
+                startOfMonth.setHours(0, 0, 0, 0);
 
-        setCurrentGenerationCount(count || 0);
+                const { count, error } = await supabase
+                    .from('generations')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_email', user.email)
+                    .gte('created_at', startOfMonth.toISOString());
+
+                if (!error && typeof count === 'number') {
+                    supa = count;
+                }
+            } catch (err) {
+                console.warn('Error fetching usage from Supabase:', err);
+            }
+        }
+
+        const effective = Math.max(local, supa);
+        setLocalUsage(email, effective);
+        setCurrentGenerationCount(effective);
     };
 
     useEffect(() => {
-        if (user) fetchUsage();
+        fetchUsage();
     }, [user]);
 
     const generateWithGroq = async (apiKey, messages) => {
@@ -539,6 +578,16 @@ const App = () => {
     const handleGenerate = async () => {
         if (!generatorConfig.topic) return;
 
+        // Comprobación de Límite Free Tier (máximo 5 generaciones al mes)
+        if (!isPremium) {
+            const email = user?.email || 'guest';
+            const currentUsed = Math.max(currentGenerationCount, getLocalUsage(email));
+            if (currentUsed >= 5) {
+                setShowLimitModal(true);
+                return;
+            }
+        }
+
         // ESTRATEGIA: Permitir vista previa gratuita, pero login para guardar o generar completo
         if (!isLoggedIn) {
             setIsGenerating(true);
@@ -576,25 +625,6 @@ const App = () => {
             return;
         }
 
-        // Check Free Tier Limit (5 generations)
-        if (!isPremium) {
-            // Count generations this month
-            const startOfMonth = new Date();
-            startOfMonth.setDate(1);
-            startOfMonth.setHours(0, 0, 0, 0);
-
-            const { count, error } = await supabase
-                .from('generations')
-                .select('*', { count: 'exact', head: true })
-                .eq('user_email', user.email)
-                .gte('created_at', startOfMonth.toISOString());
-
-            if (count >= 5) {
-                setShowLimitModal(true);
-                return;
-            }
-        }
-
         setIsGenerating(true);
         setGeneratedText(t.generator_status.loading);
 
@@ -626,13 +656,23 @@ const App = () => {
             ]);
             setGeneratedText(text);
 
-            // Log generation
-            if (isLoggedIn) {
-                await supabase.from('generations').insert({
-                    user_email: user.email,
-                    content_type: generatorConfig.type
-                });
-                fetchUsage();
+            // Registrar e incrementar generación en plan gratuito
+            if (!isPremium) {
+                const email = user?.email || 'guest';
+                const nextCount = Math.max(currentGenerationCount, getLocalUsage(email)) + 1;
+                setLocalUsage(email, nextCount);
+                setCurrentGenerationCount(nextCount);
+
+                if (isLoggedIn && user?.email) {
+                    try {
+                        await supabase.from('generations').insert({
+                            user_email: user.email,
+                            content_type: generatorConfig.type
+                        });
+                    } catch (supaErr) {
+                        console.warn('Error al guardar generacion en Supabase:', supaErr);
+                    }
+                }
             }
         } catch (error) {
             console.error(error);
@@ -1039,23 +1079,35 @@ const App = () => {
                                                     </div>
 
                                                     <button
-                                                        onClick={handleGenerate}
-                                                        disabled={isGenerating || !generatorConfig.topic}
-                                                        className="w-full py-4 bg-gradient-to-r from-primary-600 to-indigo-600 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 shadow-lg shadow-primary-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 mt-4"
+                                                        onClick={() => {
+                                                            if (!isPremium && currentGenerationCount >= 5) {
+                                                                setShowLimitModal(true);
+                                                                return;
+                                                            }
+                                                            handleGenerate();
+                                                        }}
+                                                        disabled={isGenerating || (!generatorConfig.topic && currentGenerationCount < 5)}
+                                                        className={`w-full py-4 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 shadow-lg transition-all disabled:opacity-50 mt-4 ${
+                                                            !isPremium && currentGenerationCount >= 5
+                                                                ? 'bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 shadow-rose-500/30 cursor-pointer animate-pulse'
+                                                                : 'bg-gradient-to-r from-primary-600 to-indigo-600 shadow-primary-500/20 hover:scale-[1.02] active:scale-[0.98]'
+                                                        }`}
                                                     >
                                                         {isGenerating ? (
                                                             <><div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div> <span>{t.generator.generating_btn}</span></>
+                                                        ) : !isPremium && currentGenerationCount >= 5 ? (
+                                                            <><Lock size={18} /> <span>Límite alcanzado (5/5)</span></>
                                                         ) : (
                                                             <><Send size={18} /> <span>{t.generator.generate_btn}</span></>
                                                         )}
                                                     </button>
 
                                                     {/* Free Tier Usage Counter */}
-                                                    {!isPremium && isLoggedIn && (
+                                                    {!isPremium && (
                                                         <div className="mt-4 px-2">
                                                             <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
                                                                 <span>{t.generator.free_usage}</span>
-                                                                <span className={currentGenerationCount >= 5 ? 'text-red-500' : 'text-primary-500'}>
+                                                                <span className={currentGenerationCount >= 5 ? 'text-red-500 font-black' : 'text-primary-500'}>
                                                                     {currentGenerationCount} / 5
                                                                 </span>
                                                             </div>
@@ -1063,9 +1115,17 @@ const App = () => {
                                                                 <motion.div
                                                                     initial={{ width: 0 }}
                                                                     animate={{ width: `${Math.min((currentGenerationCount / 5) * 100, 100)}%` }}
-                                                                    className={`h-full ${currentGenerationCount >= 5 ? 'bg-red-500' : 'bg-primary-500'}`}
+                                                                    className={`h-full transition-all duration-500 ${currentGenerationCount >= 5 ? 'bg-red-500' : 'bg-primary-500'}`}
                                                                 />
                                                             </div>
+                                                            {currentGenerationCount >= 5 && (
+                                                                <button 
+                                                                    onClick={() => scrollToSection('pricing')}
+                                                                    className="w-full text-center text-xs font-bold text-red-500 hover:text-red-600 hover:underline mt-2 flex items-center justify-center gap-1"
+                                                                >
+                                                                    <span>Hazte Premium para generaciones ilimitadas →</span>
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </div>
