@@ -642,6 +642,28 @@ const App = () => {
         }
     };
 
+    const handleDownload = () => {
+        if (!generatedText || generatedText.startsWith('ERROR:') || generatedText === t.generator_status.loading) {
+            alert('Primero genera un texto válido para poder descargarlo.');
+            return;
+        }
+        const blob = new Blob([generatedText], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const topicSlug = (generatorConfig.topic || 'texto')
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/gi, '_')
+            .replace(/^_+|_+$/g, '')
+            .slice(0, 30);
+        link.download = `redactaia_${topicSlug || 'texto'}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
     const scrollToSection = (id) => {
         const element = document.getElementById(id);
         if (element) {
@@ -1068,7 +1090,12 @@ const App = () => {
                                                         >
                                                             <Copy size={14} /> <span>{t.generator.copy}</span>
                                                         </button>
-                                                        <button onClick={() => alert('Función próximamente')} className="p-3 rounded-xl bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-all border border-slate-200 dark:border-slate-600 shadow-sm">
+                                                        <button 
+                                                            onClick={handleDownload} 
+                                                            title="Descargar texto (.txt)"
+                                                            aria-label="Descargar texto generado"
+                                                            className="p-3 rounded-xl bg-white dark:bg-slate-700 hover:bg-primary-600 hover:text-white dark:hover:bg-primary-600 transition-all border border-slate-200 dark:border-slate-600 shadow-sm"
+                                                        >
                                                             <Download size={14} />
                                                         </button>
                                                     </div>
