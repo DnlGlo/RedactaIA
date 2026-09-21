@@ -478,7 +478,7 @@ const App = () => {
                         'Authorization': `Bearer ${apiKey}`
                     },
                     body: JSON.stringify({
-                        model: "llama-3.1-8b-instant",
+                        model: "mixtral-8x7b-32768",
                         messages: [
                             { role: "system", content: "Eres un redactor profesional experto." },
                             { role: "user", content: previewPrompt }
@@ -488,7 +488,7 @@ const App = () => {
                 });
 
                 const data = await response.json();
-                if (!response.ok) throw new Error(data.error?.message || "Error en la API de Groq");
+                if (!response.ok) throw new Error(`[HTTP ${response.status}] ${data.error?.message || "Error en la API de Groq"}`);
 
                 const text = data.choices[0].message.content;
                 setGeneratedText(text);
@@ -555,7 +555,7 @@ const App = () => {
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: "llama-3.1-8b-instant",
+                    model: "mixtral-8x7b-32768",
                     messages: [
                         { role: "system", content: "Eres un redactor profesional experto." },
                         { role: "user", content: prompt }
@@ -565,7 +565,7 @@ const App = () => {
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.error?.message || "Error en la API de Groq");
+            if (!response.ok) throw new Error(`[HTTP ${response.status}] ${data.error?.message || "Error en la API de Groq"}`);
 
             const text = data.choices[0].message.content;
             setGeneratedText(text);
